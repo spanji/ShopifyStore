@@ -1,0 +1,12 @@
+# Design review screenshots (scripts/screenshot.cjs)
+.screenshots/
+
+# Local-only Claude Code settings
+.claude/settings.local.json
+
+# Shopify CLI
+.shopify/
+
+.DS_Store
+node_modules/
+.env
