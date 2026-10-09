@@ -6,9 +6,9 @@ The single source of truth for who the store is. Every skill reads this before w
 
 - **What we sell:** gift boxes and hampers: curated boxes of items, bought as gifts for birthdays and other occasions.
 - **Roadmap:** themed and seasonal ranges to follow (Christmas, Valentine's Day, and others to be decided).
-- **Store name:** TBD
-- **Market and country we ship to:** TBD. This decides "hamper" vs "gift basket", spelling, currency, VAT and the seasonal calendar.
-- **Currency:** TBD
+- **Store name:** Bow and Bloom (Shopify store settings, checked 9 Oct 2026)
+- **Market and country we ship to:** United Kingdom. Checkout ships to GB only (store settings, checked 9 Oct 2026). So: "hamper", "basket", UK spelling ("personalised"), prices shown including VAT, and the UK seasonal calendar.
+- **Currency:** GBP (£)
 - **Price range per box:** TBD
 - **Delivery:** carriers, dispatch days, daily cut-off time, next-day option, delivery area: TBD
 - **What goes in the boxes:** food, drink, alcohol, pamper, homeware, other: TBD
