@@ -1,0 +1,146 @@
+{% comment %}
+  Section contract.
+  A satin ribbon across the page with the Bow and Bloom bow at its centre.
+  When it scrolls into view the bow draws itself and the ribbon unrolls
+  (assets/bow-and-bloom.js adds .bb-reveal and .is-revealed). Without the
+  script, or with reduced motion, it shows fully drawn.
+  @example
+  <!-- Theme editor: Add section > Ribbon divider, between two sections -->
+{% endcomment %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}{% if section.settings.show_pattern %} bb-pattern{% endif %}"></div>
+<div
+  class="section page-width-content color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
+  <div
+    class="ribbon-divider"
+    style="--bb-bow-size: {{ section.settings.bow_size }}px;"
+  >
+    <span class="ribbon-divider__ribbon ribbon-divider__ribbon--start"></span>
+    {% render 'bow', style: 'line', class: 'ribbon-divider__bow' %}
+    <span class="ribbon-divider__ribbon ribbon-divider__ribbon--end"></span>
+  </div>
+</div>
+
+{% stylesheet %}
+  .ribbon-divider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-primary);
+  }
+
+  .ribbon-divider__ribbon {
+    block-size: 3px;
+    border-radius: 3px;
+  }
+
+  .ribbon-divider__ribbon--start {
+    background: linear-gradient(90deg, rgb(var(--color-primary-rgb) / 0), var(--color-primary) 80%);
+    transform-origin: right center;
+  }
+
+  .ribbon-divider__ribbon--end {
+    background: linear-gradient(270deg, rgb(var(--color-primary-rgb) / 0), var(--color-primary) 80%);
+    transform-origin: left center;
+  }
+
+  .ribbon-divider__bow {
+    inline-size: var(--bb-bow-size, 72px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ribbon-divider.bb-reveal {
+      opacity: 1;
+      translate: none;
+    }
+
+    .ribbon-divider.bb-reveal .ribbon-divider__ribbon {
+      scale: 0 1;
+      transition: scale 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+    }
+
+    .ribbon-divider.bb-reveal .bb-bow--line path {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .ribbon-divider.bb-reveal .bb-bow--line path:nth-child(n + 5) {
+      transition-delay: 0.3s;
+    }
+
+    .ribbon-divider.is-revealed .ribbon-divider__ribbon {
+      scale: 1 1;
+    }
+
+    .ribbon-divider.is-revealed .bb-bow--line path {
+      stroke-dashoffset: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Ribbon divider",
+  "class": "section-wrapper",
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "range",
+      "id": "bow_size",
+      "label": "Bow size",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pattern",
+      "label": "Bow pattern background",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ribbon divider"
+    }
+  ]
+}
+{% endschema %}

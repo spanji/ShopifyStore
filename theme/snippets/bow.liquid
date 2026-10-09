@@ -1,0 +1,15 @@
+{%- doc -%}
+  Renders the Bow and Bloom bow, the ribbon motif used across the theme, as inline SVG.
+  It takes its colour from `color`, so it follows the active colour scheme.
+
+  @param {string} [style] - 'fill' for the solid satin bow (default) or 'line' for an outline that can draw itself.
+  @param {string} [class] - Extra classes for the svg element.
+
+  @example
+  {% render 'bow', style: 'line', class: 'ribbon-divider__bow' %}
+{%- enddoc -%}
+{%- if style == 'line' -%}
+  <svg class="bb-bow bb-bow--line {{ class }}" viewBox="0 0 80 48" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path pathLength="1" d="M38.2 17.2C33 9.5 22 2.4 13.2 4.2C6 5.8 4.6 14.6 10.6 19.6C16.6 24.6 30 22.4 38.2 17.2Z"/><path pathLength="1" d="M33.6 16.4C28.6 12.2 21.6 8.6 16 9.2C11.8 9.6 11.2 13.8 14.4 16.2C18.6 19.2 27.6 18.8 33.6 16.4Z"/><path pathLength="1" d="M 41.8 17.2 C 47 9.5 58 2.4 66.8 4.2 C 74 5.8 75.4 14.6 69.4 19.6 C 63.4 24.6 50 22.4 41.8 17.2Z"/><path pathLength="1" d="M 46.4 16.4 C 51.4 12.2 58.4 8.6 64 9.2 C 68.2 9.6 68.8 13.8 65.6 16.2 C 61.4 19.2 52.4 18.8 46.4 16.4Z"/><path pathLength="1" d="M36.4 13.8C38.6 12.6 41.4 12.6 43.6 13.8L43.1 21.2C41.1 22.4 38.9 22.4 36.9 21.2Z"/><path pathLength="1" d="M37.6 21C35.6 26 31.2 30.4 29.2 33.8C27.6 36.4 25 39.2 21.8 42.2L26.4 41.4L28.2 45.8C30.4 41.8 32.4 38.2 34 35.2C36 31.2 38.4 26.6 39.9 21.8Z"/><path pathLength="1" d="M 42.4 21 C 44.4 26 48.8 30.4 50.8 33.8 C 52.4 36.4 55 39.2 58.2 42.2 L 53.6 41.4 L 51.8 45.8 C 49.6 41.8 47.6 38.2 46 35.2 C 44 31.2 41.6 26.6 40.1 21.8Z"/></svg>
+{%- else -%}
+  <svg class="bb-bow {{ class }}" viewBox="0 0 80 48" fill="currentColor" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M38.2 17.2C33 9.5 22 2.4 13.2 4.2C6 5.8 4.6 14.6 10.6 19.6C16.6 24.6 30 22.4 38.2 17.2ZM33.6 16.4C28.6 12.2 21.6 8.6 16 9.2C11.8 9.6 11.2 13.8 14.4 16.2C18.6 19.2 27.6 18.8 33.6 16.4ZM 41.8 17.2 C 47 9.5 58 2.4 66.8 4.2 C 74 5.8 75.4 14.6 69.4 19.6 C 63.4 24.6 50 22.4 41.8 17.2ZM 46.4 16.4 C 51.4 12.2 58.4 8.6 64 9.2 C 68.2 9.6 68.8 13.8 65.6 16.2 C 61.4 19.2 52.4 18.8 46.4 16.4Z"/><path d="M37.6 21C35.6 26 31.2 30.4 29.2 33.8C27.6 36.4 25 39.2 21.8 42.2L26.4 41.4L28.2 45.8C30.4 41.8 32.4 38.2 34 35.2C36 31.2 38.4 26.6 39.9 21.8ZM 42.4 21 C 44.4 26 48.8 30.4 50.8 33.8 C 52.4 36.4 55 39.2 58.2 42.2 L 53.6 41.4 L 51.8 45.8 C 49.6 41.8 47.6 38.2 46 35.2 C 44 31.2 41.6 26.6 40.1 21.8Z"/><path d="M36.4 13.8C38.6 12.6 41.4 12.6 43.6 13.8L43.1 21.2C41.1 22.4 38.9 22.4 36.9 21.2Z"/></svg>
+{%- endif -%}
