@@ -26,7 +26,7 @@ The single source of truth for who the store is. Every skill reads this before w
 
 ## Positioning
 
-- **One-sentence promise:** TBD
+- **One-sentence promise:** Gifts for every moment (tagline in the logo). Card line: "Small gifts for big moments".
 - **Why us over the alternatives:** a personal, warm voice where competitors are generic; a beautifully presented pink box with 17 items; free tracked delivery at £39.
 - **Competitors and references** (stores the owner admires or competes with): marketplace pamper boxes at £14–£33 with keyword-stuffed titles (Amazon and YPC-style listings), charity-shop letterbox hampers, and Hampers.com. Most charge delivery under £50.
 
@@ -43,11 +43,12 @@ This is where the owner's writing voice is stored. Skills that mention `.claude/
 
 Filled in by the `storefront-design` process. Record the decision and the reason.
 
-- **Palette** (named hex values and their roles): Blush-white #FFF7F8 (page background), Blush #F9E3E8 (alternate sections), Rose #C4466F (primary buttons, white text 4.7:1), Deep rose #9E3457 (links and hover; Rose is too light for small text on blush), Deep plum #3A2230 (text, footer, announcement bar), Peach #F3C9A8 (delivery-promise band). Chosen 9 Oct 2026 to match the pink box, tissue and satin ribbon in the product photo.
-- **Typefaces and type scale:** Playfair Display (headings h1–h3: romantic, gift-tag feel) with Assistant (body, menus, buttons: clean and legible). Two families only. Scale is the theme's presets.
+- **Palette** (named hex values and their roles), matched to the logo and banner on 9 Oct 2026: Cream #FBF4EF (page background), Petal #F3E3DC (alternate sections), Rosewood #9C5B5F (primary buttons, white text 5.1:1; links on cream 4.7:1), Deep rosewood #7E4549 (links on petal), Dusty rose #D7A9A6 (delivery band, borders), Cocoa #4A2C2A (text, footer, announcement bar; from the logo ink), Sage #8C9A80 (eucalyptus; tiny accents only). Replaces the earlier brighter blush and rose.
+- **Typefaces and type scale:** Playfair Display for headings (close to the logo's high-contrast serif) with Assistant for body, menus and buttons. Two families only. Scale is the theme's presets.
 - **Photography style and product image ratio:** real photos of the actual box only (the launch image is AI-enhanced and must be replaced). Warm daylight, pink tissue and ribbon, open-lid hero shot plus close-ups. Product cards crop square.
 - **Spacing, radius and shadow tokens:** theme defaults for now: pill buttons (radius 37), 8px inputs, no card shadows.
-- **Seasonal colour schemes:** none yet. Theme colour schemes: scheme-1 base (blush-white), scheme-2 photo overlay (plum/white), scheme-3 plum (footer, announcement), scheme-4 peach, scheme-5 blush, scheme-6 rose (sale badge). Add Christmas or Valentine's as new schemes rather than editing these.
+- **Seasonal colour schemes:** none yet. Theme colour schemes: scheme-1 cream base, scheme-2 cocoa overlay, scheme-3 cocoa (footer, announcement), scheme-4 petal (hamper feature), scheme-5 dusty rose (delivery band), scheme-6 rosewood (marquee, sale badge). Add Christmas or Valentine's as new schemes rather than editing these.
+- **Logo files:** `docs/brand/` holds the banner, the wordmark (header logo, transparent PNG cut from the banner), the BB monogram and the favicon. The same files are in Shopify Files as bow-and-bloom-*. The banner shows flowers, which the store doesn't sell, so the homepage headline directly under it names the product.
 - **Theme:** "Bow and Bloom launch" (unpublished copy of the Horizon-family Balance theme, created 9 Oct 2026) holds the new homepage, colours, fonts, announcement bar, footer and the free gift message field. The owner previews and publishes it.
 
 ## Seasonal learnings
