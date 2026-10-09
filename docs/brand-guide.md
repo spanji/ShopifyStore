@@ -16,6 +16,7 @@ The single source of truth for who the store is. Every skill reads this before w
 - **Made by us or sourced:** all items are bought in, unbranded. Skincare, soaps and accessories come from overseas sites; sweets come from UK wholesalers, and the gummies are repacked into jars by us.
 - **Business set-up:** sole trader, run by Janna Serry, not yet registered with HMRC or for VAT. Policies show her name, the email and the mobile number.
 - **Address:** the owner agreed on 9 Oct 2026 to show the Bradford home address (17 Lady Royd Close, BD8 0FD) on the policies. No separate legal notice: the terms and contact information carry the name and address the UK rules ask for.
+- **Policies:** kept to the legal minimum, owner's choice (9 Oct 2026). Say only what the law needs and what the owner has confirmed; no extra promises. Source text is in `docs/policies/`.
 - **Compliance to-do (flags, not legal advice):** register as a food business with Bradford Council; put ingredients and allergens for the sweets on the product page and on the repacked jar label; check every skincare item and the soaps for an English ingredients list and a UK Responsible Person address, and swap any that fail for UK-wholesale versions.
 - **Corporate gifting:** yes or no, and minimum order: TBD
 - **Social accounts:** TikTok [@bowandbloomgiftboxes](https://www.tiktok.com/@bowandbloomgiftboxes); the store link is in its bio. No other accounts yet. The TikTok icon is in the "Bow and Bloom launch" theme footer.
