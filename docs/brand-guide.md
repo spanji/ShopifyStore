@@ -14,7 +14,8 @@ The single source of truth for who the store is. Every skill reads this before w
 - **What goes in the boxes:** pamper and beauty (skincare, soaps), accessories (socks, hair accessories, sleep mask, keyring, mirror, phone grip) and sweets. No alcohol.
 - **Dietary range:** vegan, gluten-free, alcohol-free options: TBD
 - **Made by us or sourced:** all items are bought in, unbranded. Skincare, soaps and accessories come from overseas sites; sweets come from UK wholesalers, and the gummies are repacked into jars by us.
-- **Business set-up:** sole trader, not yet registered with HMRC. Trading address: Bradford (shown on policies with the mobile number).
+- **Business set-up:** sole trader, run by Janna Serry, not yet registered with HMRC or for VAT. Policies show her name, the email and the mobile number.
+- **Address:** never publish the owner's home address. A business address (a real street address that forwards post, not a PO box) is TBD; when it arrives, add it to the legal notice, terms of service, contact information, privacy policy and Settings → General → Store details.
 - **Compliance to-do (flags, not legal advice):** register as a food business with Bradford Council; put ingredients and allergens for the sweets on the product page and on the repacked jar label; check every skincare item and the soaps for an English ingredients list and a UK Responsible Person address, and swap any that fail for UK-wholesale versions.
 - **Corporate gifting:** yes or no, and minimum order: TBD
 - **Social accounts:** TikTok [@bowandbloomgiftboxes](https://www.tiktok.com/@bowandbloomgiftboxes); the store link is in its bio. No other accounts yet. The TikTok icon is in the "Bow and Bloom launch" theme footer.

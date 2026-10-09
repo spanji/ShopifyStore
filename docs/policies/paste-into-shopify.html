@@ -1,34 +1,55 @@
 <!doctype html>
-<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bow and Bloom policies</title>
 <style>
-:root{--bg:#fff8f9;--ink:#2b1d22;--muted:#7a6168;--card:#ffffff;--line:#f1d6dd;--accent:#c4466f}
-@media (prefers-color-scheme: dark){:root{--bg:#1d1518;--ink:#f6e9ed;--muted:#c3a9b1;--card:#271c20;--line:#4a3239;--accent:#f08bab}}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+:root{--bg:#FBF4EF;--ink:#4A2C2A;--muted:#7E4549;--card:#fff;--line:#F3E3DC;--accent:#9C5B5F;--on-accent:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#231716;--ink:#F6E9E4;--muted:#D7A9A6;--card:#2E1F1E;--line:#4A3230;--accent:#D7A9A6;--on-accent:#231716}}
+:root[data-theme="dark"]{--bg:#231716;--ink:#F6E9E4;--muted:#D7A9A6;--card:#2E1F1E;--line:#4A3230;--accent:#D7A9A6;--on-accent:#231716}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:760px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:1.6rem;margin:0 0 4px} .sub{color:var(--muted);margin:0 0 24px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 24px}
 section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 18px}
-.label{color:var(--muted);font-size:.9rem;margin-bottom:10px}
-button{background:var(--accent);color:#fff;border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:.9rem;cursor:pointer;margin-bottom:12px}
-.policy{border-top:1px dashed var(--line);padding-top:12px} .policy h2{font-size:1.1rem;margin:18px 0 6px}
-ol li{margin-bottom:6px} a{color:var(--accent)}
-</style></head><body><main>
-<h1>Bow and Bloom: policies to paste</h1>
-<p class="sub">Approved 9 Oct 2026. Click a Copy button, then paste into the matching box in Shopify admin and click Save.</p>
+section>h2{font-size:1.15rem;margin:0 0 6px}
+.note{color:var(--muted);margin:0 0 12px}
+.gap{border-left:4px solid var(--accent);padding:10px 14px;margin:0 0 18px;background:var(--card);border-radius:0 10px 10px 0}
+button{background:var(--accent);color:var(--on-accent);border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:.9rem;cursor:pointer;margin-bottom:12px}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.policy{border-top:1px dashed var(--line);padding-top:12px;overflow-wrap:anywhere}
+.policy h2{font-size:1.05rem;margin:18px 0 6px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>Bow and Bloom: policy updates</h1>
+<p class="sub">Updated 9 Oct 2026. In Shopify admin go to <b>Settings → Policies</b>. For each step, tap Copy, then paste into the matching box and click Save.</p>
+<p class="gap"><b>Still missing: an address.</b> UK rules say online sellers must show a physical address. Your home address is staying private, so once you have a business address, send it to me and I'll add it to the legal notice, terms and contact information.</p>
 <section>
-  <div class="label">Step 1 · Settings → Shipping and delivery → United Kingdom rates</div>
-  <ol>
-    <li>Delete <b>Standard £4.99</b>, the <b>free Standard over £50</b> rate and <b>Express £6.99</b>.</li>
-    <li>Add a flat rate named <b>Free tracked delivery (2–3 working days)</b> at <b>£0.00</b>.</li>
-    <li>Add a flat rate named <b>Next day: order by 12pm Mon–Sat</b> at <b>£2.99</b>.</li>
-    <li>If EU or International zones still show, delete them (you only ship to the UK).</li>
-  </ol>
+  <h2>Step 1 · Legal notice</h2>
+  <p class="note">New. Paste into the empty Legal notice box.</p>
+  <button type="button" data-copy="p1">Copy legal notice</button>
+  <div class="policy" id="p1"><p>This website is run by <strong>Janna Serry</strong>, a sole trader trading as <strong>Bow and Bloom</strong>, based in Yorkshire, United Kingdom.</p>
+<h2>Contact us</h2>
+<p>Email: <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a><br>Phone: 07597 600465</p>
+<h2>Business details</h2>
+<ul>
+<li>Bow and Bloom is a sole trader business, not a registered company.</li>
+<li>We're not registered for VAT, so no VAT is added to our prices.</li>
+</ul>
+<h2>Questions and complaints</h2>
+<p>If something isn't right, email or call us first and we'll do our best to put it right. Our <a href="https://t4qigc-9u.myshopify.com/policies/refund-policy">refund policy</a> and <a href="https://t4qigc-9u.myshopify.com/policies/terms-of-service">terms of service</a> explain your options and your legal rights.</p>
+<h2>Using our content</h2>
+<p>Please ask us before reusing text or photos from this website.</p></div>
 </section>
-
 <section>
-  <div class="label">Step 2 · Settings → Policies → <b>Refund policy</b></div>
-  <button onclick="copyBox('p1')">Copy refund policy</button>
-  <div class="policy" id="p1"><p>We want every box to make someone's day. If something isn't right, please message us first at <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a> or on 07597 600465, and we'll sort it out together.</p>
+  <h2>Step 2 · Refund policy</h2>
+  <p class="note">Replace everything in the box. Puts back the 14-day change-of-mind section.</p>
+  <button type="button" data-copy="p2">Copy refund policy</button>
+  <div class="policy" id="p2"><p>We want every box to make someone's day. If something isn't right, please message us first at <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a> or on 07597 600465, and we'll sort it out together.</p>
 <h2>Changed your mind?</h2>
 <p>You can cancel your order within 14 days of the day it's delivered. Tell us by email or phone, then send the box back within 14 days of telling us. Please talk to us before you post anything, so we can help.</p>
 <ul>
@@ -40,34 +61,15 @@ ol li{margin-bottom:6px} a{color:var(--accent)}
 <h2>Damaged, faulty or not what you ordered?</h2>
 <p>Message us as soon as you can with a photo, and we'll work out the best fix with you, whether that's a replacement or a refund. This doesn't affect your legal rights under the Consumer Rights Act 2015.</p>
 <h2>Lost parcels</h2>
-<p>If your parcel hasn't arrived, let us know. Once Evri confirms it's lost, we'll send a replacement box, or refund you if that box is out of stock.</p>
-</div>
+<p>If your parcel hasn't arrived, let us know. Once Evri confirms it's lost, we'll send a replacement box, or refund you if that box is out of stock.</p></div>
 </section>
 <section>
-  <div class="label">Step 3 · Settings → Policies → <b>Shipping policy</b></div>
-  <button onclick="copyBox('p2')">Copy shipping policy</button>
-  <div class="policy" id="p2"><p>We deliver to addresses in the United Kingdom, using Evri.</p>
-<h2>Delivery options</h2>
-<ul>
-<li><strong>Free tracked delivery</strong> on every order: usually 2–3 working days after dispatch.</li>
-<li><strong>Next day: £2.99.</strong> Order by 12pm Monday to Saturday and it's usually delivered the next working day. Evri doesn't guarantee next-day delivery, so if it must arrive by a certain date, please order a day or two early.</li>
-</ul>
-<h2>Dispatch</h2>
-<p>Orders placed by 12pm Monday to Saturday are sent the same day. Orders after 12pm go out on the next dispatch day, and Sunday orders go out on Monday.</p>
-<h2>Tracking</h2>
-<p>We'll email you a tracking link once your box is on its way.</p>
-<h2>Sending a gift</h2>
-<p>Just enter their address as the delivery address at checkout, and we'll send the box straight to them.</p>
-<h2>Something wrong with your delivery?</h2>
-<p>If your parcel is late, lost or arrives damaged, message us at <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a> or on 07597 600465. See our <a href="/policies/refund-policy">refund policy</a> for how we put things right.</p>
-</div>
-</section>
-<section>
-  <div class="label">Step 4 · Settings → Policies → <b>Terms of service</b></div>
-  <button onclick="copyBox('p3')">Copy terms of service</button>
+  <h2>Step 3 · Terms of service</h2>
+  <p class="note">Replace everything in the box. Adds who runs the shop and fixes three links that don't work.</p>
+  <button type="button" data-copy="p3">Copy terms of service</button>
   <div class="policy" id="p3"><p>These terms apply when you buy from Bow and Bloom through this website. Please read them before you order. They don't affect your legal rights as a consumer.</p>
 <h2>About us</h2>
-<p>Bow and Bloom, 17 Lady Royd Close, Bradford, BD8 0FD, United Kingdom. Email <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a>, phone 07597 600465.</p>
+<p>Bow and Bloom is run by Janna Serry, a sole trader based in Yorkshire, United Kingdom. Email <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a>, phone 07597 600465.</p>
 <h2>Your order</h2>
 <p>When you place an order, we'll email you to confirm we've received it. Our contract with you starts when we email to say your order has been dispatched. If we can't accept your order, for example because an item is out of stock, we'll tell you and refund you in full.</p>
 <h2>Prices and payment</h2>
@@ -77,28 +79,46 @@ ol li{margin-bottom:6px} a{color:var(--accent)}
 <h2>Allergies and skin sensitivities</h2>
 <p>Our boxes contain sweets. Ingredients and allergen information are on each product page. Please check them before you buy, especially if the box is a gift. Skincare and soaps are for external use only. If the person receiving the box has sensitive skin, we recommend a patch test first.</p>
 <h2>Delivery</h2>
-<p>We deliver to UK addresses only. Delivery options, times and charges are in our <a href="/policies/shipping-policy">shipping policy</a>.</p>
+<p>We deliver to UK addresses only. Delivery options, times and charges are in our <a href="https://t4qigc-9u.myshopify.com/policies/shipping-policy">shipping policy</a>.</p>
 <h2>Cancellations, returns and refunds</h2>
-<p>See our <a href="/policies/refund-policy">refund policy</a>. You have a legal right to cancel most online orders within 14 days of delivery, and to a repair, replacement or refund if something is faulty or not as described.</p>
+<p>See our <a href="https://t4qigc-9u.myshopify.com/policies/refund-policy">refund policy</a>. You have a legal right to cancel most online orders within 14 days of delivery, and to a repair, replacement or refund if something is faulty or not as described.</p>
 <h2>Our responsibility to you</h2>
 <p>We're responsible for loss or damage you suffer that is a foreseeable result of us breaking these terms or failing to use reasonable care. We're not responsible for loss that isn't foreseeable. Nothing in these terms limits our liability for death or personal injury caused by our negligence, for fraud, or for anything else the law doesn't allow us to limit. We only sell to consumers for their own private use, and we're not liable for any business losses.</p>
 <h2>Your information</h2>
-<p>We use your personal information as set out in our <a href="/policies/privacy-policy">privacy policy</a>.</p>
+<p>We use your personal information as set out in our <a href="https://t4qigc-9u.myshopify.com/policies/privacy-policy">privacy policy</a>.</p>
 <h2>Changes to these terms</h2>
 <p>We may update these terms from time to time. The version on this page when you place your order is the one that applies to it.</p>
 <h2>Law</h2>
-<p>These terms are governed by the law of England and Wales. If you live in Scotland or Northern Ireland, you can also bring a claim in your local courts.</p>
-</div>
+<p>These terms are governed by the law of England and Wales. If you live in Scotland or Northern Ireland, you can also bring a claim in your local courts.</p></div>
 </section>
 <section>
-  <div class="label">Step 5 · Settings → Policies → <b>Contact information</b></div>
-  <button onclick="copyBox('p4')">Copy contact information</button>
-  <div class="policy" id="p4"><p><strong>Bow and Bloom</strong></p>
-<p>17 Lady Royd Close<br>Bradford<br>BD8 0FD<br>United Kingdom</p>
-<p>Email: <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a><br>Phone: 07597 600465</p>
-</div>
+  <h2>Step 4 · Contact information</h2>
+  <p class="note">Replace everything in the box. Adds your name.</p>
+  <button type="button" data-copy="p4">Copy contact information</button>
+  <div class="policy" id="p4"><p><strong>Bow and Bloom</strong><br>Run by Janna Serry, sole trader, Yorkshire, United Kingdom</p>
+<p>Email: <a href="mailto:bowandbloomgifts@outlook.com">bowandbloomgifts@outlook.com</a><br>Phone: 07597 600465</p></div>
 </section>
+<section>
+  <h2>Step 5 · Privacy policy</h2>
+  <p class="note">Don't replace this one. Scroll to the last paragraph, under <b>Contact</b>, and delete your home address, from "or contact us at" to the end of the address. Keep the phone and email. If Shopify won't let you edit it, the address comes from Settings → General → Store details, so change it there once you have your business address.</p>
+</section>
+<section>
+  <h2>Step 6 · Shipping policy</h2>
+  <p class="note">Your version is fine. Just delete the empty line at the very bottom (a blank heading).</p>
+</section>
+</main>
 <script>
-function copyBox(id){const el=document.getElementById(id);try{const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');s.removeAllRanges();}catch(e){}}
+document.querySelectorAll('button[data-copy]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var el = document.getElementById(btn.dataset.copy), label = btn.textContent;
+    try {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      document.execCommand('copy'); s.removeAllRanges();
+      btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = label; }, 1500);
+    } catch (e) {}
+  });
+});
 </script>
-</main></body></html>
+</body>
+</html>
