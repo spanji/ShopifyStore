@@ -43,11 +43,12 @@ This is where the owner's writing voice is stored. Skills that mention `.claude/
 
 Filled in by the `storefront-design` process. Record the decision and the reason.
 
-- **Palette** (named hex values and their roles): TBD
-- **Typefaces and type scale:** TBD
-- **Photography style and product image ratio:** TBD
-- **Spacing, radius and shadow tokens:** TBD
-- **Seasonal colour schemes:** TBD
+- **Palette** (named hex values and their roles): Blush-white #FFF7F8 (page background), Blush #F9E3E8 (alternate sections), Rose #C4466F (primary buttons, white text 4.7:1), Deep rose #9E3457 (links and hover; Rose is too light for small text on blush), Deep plum #3A2230 (text, footer, announcement bar), Peach #F3C9A8 (delivery-promise band). Chosen 9 Oct 2026 to match the pink box, tissue and satin ribbon in the product photo.
+- **Typefaces and type scale:** Playfair Display (headings h1–h3: romantic, gift-tag feel) with Assistant (body, menus, buttons: clean and legible). Two families only. Scale is the theme's presets.
+- **Photography style and product image ratio:** real photos of the actual box only (the launch image is AI-enhanced and must be replaced). Warm daylight, pink tissue and ribbon, open-lid hero shot plus close-ups. Product cards crop square.
+- **Spacing, radius and shadow tokens:** theme defaults for now: pill buttons (radius 37), 8px inputs, no card shadows.
+- **Seasonal colour schemes:** none yet. Theme colour schemes: scheme-1 base (blush-white), scheme-2 photo overlay (plum/white), scheme-3 plum (footer, announcement), scheme-4 peach, scheme-5 blush, scheme-6 rose (sale badge). Add Christmas or Valentine's as new schemes rather than editing these.
+- **Theme:** "Bow and Bloom launch" (unpublished copy of the Horizon-family Balance theme, created 9 Oct 2026) holds the new homepage, colours, fonts, announcement bar, footer and the free gift message field. The owner previews and publishes it.
 
 ## Seasonal learnings
 
