@@ -17,6 +17,8 @@ The single source of truth for who the store is. Every skill reads this before w
 - **Business set-up:** sole trader, not yet registered with HMRC. Trading address: Bradford (shown on policies with the mobile number).
 - **Compliance to-do (flags, not legal advice):** register as a food business with Bradford Council; put ingredients and allergens for the sweets on the product page and on the repacked jar label; check every skincare item and the soaps for an English ingredients list and a UK Responsible Person address, and swap any that fail for UK-wholesale versions.
 - **Corporate gifting:** yes or no, and minimum order: TBD
+- **Social accounts:** TikTok [@bowandbloomgiftboxes](https://www.tiktok.com/@bowandbloomgiftboxes); the store link is in its bio. No other accounts yet. The TikTok icon is in the "Bow and Bloom launch" theme footer.
+- **Domain:** none yet; the store runs on t4qigc-9u.myshopify.com.
 
 ## Audience
 
