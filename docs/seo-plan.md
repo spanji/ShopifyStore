@@ -15,6 +15,19 @@ Written 10 Oct 2026, before launch (password on). Built from an audit of the sto
 
 Nobody can promise a ranking or a date. Nothing below will show results within the first 30 days, so we judge it after a month, not a week.
 
+## Progress
+
+- **10 Oct 2026, done:**
+  - Batch 1 (1.2): search titles and descriptions for FAQ, About, Contact and Corporate; blog renamed "Gift ideas" (/blogs/gift-ideas, with /blogs/news redirecting).
+  - Theme fixes (1.3) on "Bow and Bloom v3 (SEO)":
+    - one H1 on the homepage
+    - width-based image sizes, with the hero loading first: main picture at about 2.6 s on the slow-4G phone test, down from 4.4 s
+    - business details with email, phone, address and TikTok; returns appear once the refund policy exists, and the alternate name once the store name is "Bow & Bloom"
+    - FAQ questions as structured data
+    - copy and four questions below the birthday hampers grid, through a new `collection.birthday-hampers` template the collection now uses
+  - The live v2 theme falls back to the normal collection layout until v3 is published.
+- **Waiting on the owner:** shop settings (1.1), policies, photos (1.4), domain (1.5), publishing v3.
+
 ## Decisions (owner, 10 Oct 2026)
 
 | Topic | Decision |
