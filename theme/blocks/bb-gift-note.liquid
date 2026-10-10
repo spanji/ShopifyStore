@@ -5,6 +5,8 @@
   before it, with the message saved on the note's line, so the basket opens with
   both. Express checkout buttons hide while it is ticked, because they skip the
   basket and would leave the note behind. Unticked, nothing extra is added.
+  Once the note is in, the box resets and a line says the note is in the basket;
+  it goes when the note is taken out, and a note left without a hamper is removed.
 {%- enddoc -%}
 
 {%- liquid
@@ -17,6 +19,13 @@
   assign message_id = 'BbNoteMessage-' | append: block.id
   assign about_id = 'BbNoteAbout-' | append: block.id
   assign count_id = 'BbNoteCount-' | append: block.id
+
+  assign notes_in_basket = 0
+  for item in cart.items
+    if item.variant_id == note_variant.id
+      assign notes_in_basket = notes_in_basket | plus: item.quantity
+    endif
+  endfor
 
   if note_variant.price < 100
     assign note_price = note_variant.price | append: 'p'
@@ -46,6 +55,16 @@
       <span class="bb-note__label">{{ block_settings.label | escape }}</span>
       <span class="bb-note__price">+{{ note_price }}</span>
     </label>
+
+    <p
+      class="bb-note__added"
+      role="status"
+      {% if notes_in_basket == 0 %}
+        hidden
+      {% endif %}
+    >
+      {{ block_settings.added_text | escape }}
+    </p>
 
     <div
       class="bb-note__panel"
@@ -180,6 +199,31 @@
     color: var(--color-primary);
   }
 
+  /* After it goes in the basket the box resets, and this line says where the note is. */
+  .bb-note__added {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0.6rem 0 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .bb-note__added::before {
+    content: '';
+    flex: none;
+    inline-size: 1rem;
+    block-size: 1rem;
+    background-color: currentcolor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.4 6.4 11.6 13 4.6'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .bb-note__added[hidden],
+  .bb-note:has(.bb-note__check:checked) .bb-note__added {
+    display: none;
+  }
+
   /* What the note is and the message box open only once it's ticked. */
   .bb-note__panel {
     display: none;
@@ -310,6 +354,12 @@
       "id": "property_key",
       "label": "Name on the order",
       "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "added_text",
+      "label": "Once a note is in the basket",
+      "default": "Your note is in your basket."
     },
     {
       "type": "text",

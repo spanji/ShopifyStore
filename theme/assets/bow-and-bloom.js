@@ -563,8 +563,10 @@ async function addNoteThenSubmit(note, form, submitter) {
   const error = note.querySelector('.bb-note__error');
   error?.setAttribute('hidden', '');
 
+  notesInFlight += 1;
+  let settling = false;
   try {
-    const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart/add.js`, {
+    const response = await fetch(`${cartRoot()}cart/add.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
@@ -579,7 +581,8 @@ async function addNoteThenSubmit(note, form, submitter) {
     });
     const result = await response.json();
     if (!response.ok || result.status) throw new Error(result.description || result.message);
-    takeBackIfProductFails(form, result.items?.[0]?.key);
+    settling = true;
+    settleNote(note, form, result.items?.[0]?.key);
 
     form.dataset.bbNotePassing = 'true';
     try {
@@ -593,19 +596,26 @@ async function addNoteThenSubmit(note, form, submitter) {
       error.removeAttribute('hidden');
     }
   } finally {
+    if (!settling) notesInFlight = Math.max(0, notesInFlight - 1);
     delete note.dataset.bbBusy;
   }
 }
 
 /**
- * If the product itself then can't be added (sold out, say), the note comes back
- * out of the basket, so nobody pays for a note with nothing to go with it.
+ * Waits for the product form's answer. If the product went in, the tick box resets
+ * (the note now lives in the basket, and the line under the box says so). If the
+ * product couldn't be added (sold out, say), the note comes back out of the basket,
+ * so nobody pays for a note with nothing to go with it.
+ * @param {HTMLElement} note
  * @param {HTMLFormElement} form
  * @param {string | undefined} key
  */
-function takeBackIfProductFails(form, key) {
+function settleNote(note, form, key) {
   const component = form.closest('product-form-component');
-  if (!key || !component) return;
+  if (!key || !component) {
+    notesInFlight = Math.max(0, notesInFlight - 1);
+    return;
+  }
 
   /** @param {Event} event */
   const onResult = (event) => {
@@ -613,14 +623,23 @@ function takeBackIfProductFails(form, key) {
     stop();
     const detail = /** @type {CustomEvent} */ (event).detail;
     if (event.type === 'cart:error' || detail?.data?.didError) {
-      fetch(`${window.Shopify?.routes?.root || '/'}cart/change.js`, {
+      fetch(`${cartRoot()}cart/change.js`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ id: key, quantity: 0 }),
       }).catch(() => {});
+      return;
     }
+    const check = note.querySelector('.bb-note__check');
+    const message = note.querySelector('.bb-note__message');
+    const count = note.querySelector('.bb-note__count');
+    if (check instanceof HTMLInputElement) check.checked = false;
+    if (message instanceof HTMLTextAreaElement) message.value = '';
+    if (count instanceof HTMLElement) count.textContent = `0/${count.dataset.max}`;
+    syncNote(note);
   };
   const stop = () => {
+    notesInFlight = Math.max(0, notesInFlight - 1);
     document.removeEventListener('cart:update', onResult);
     document.removeEventListener('cart:error', onResult);
     clearTimeout(timer);
@@ -629,6 +648,89 @@ function takeBackIfProductFails(form, key) {
   document.addEventListener('cart:update', onResult);
   document.addEventListener('cart:error', onResult);
 }
+
+/* ---------- Personalised note: keeping the page in step with the basket ---------- */
+
+/** Notes on their way into the basket, which must not be mistaken for lonely ones. */
+let notesInFlight = 0;
+
+const cartRoot = () => window.Shopify?.routes?.root || '/';
+
+/**
+ * @param {Event | null} event
+ * @returns {Promise<{ items: { key: string, variant_id: number, quantity: number, product_type: string }[], item_count: number } | null>}
+ */
+async function basketFrom(event) {
+  const resource = /** @type {CustomEvent | null} */ (event)?.detail?.resource;
+  if (resource && Array.isArray(resource.items)) return resource;
+  const response = await fetch(`${cartRoot()}cart.js`, { headers: { Accept: 'application/json' } });
+  return response.ok ? response.json() : null;
+}
+
+/**
+ * Shows "Your note is in your basket" under each tick box while a note is there.
+ * @param {{ items: { variant_id: number, quantity: number }[] }} basket
+ */
+function showNotesInBasket(basket) {
+  for (const note of document.querySelectorAll('[data-bb-note]')) {
+    if (!(note instanceof HTMLElement)) continue;
+    const inBasket = basket.items.some((item) => String(item.variant_id) === note.dataset.variantId);
+    note.querySelector('.bb-note__added')?.toggleAttribute('hidden', !inBasket);
+  }
+}
+
+/**
+ * Add-ons (product type "Add-on", such as the note) only go with a hamper. If the
+ * hampers leave the basket, the add-ons follow, and the basket redraws.
+ * @param {{ items: { key: string, product_type: string }[] }} basket
+ */
+async function removeLonelyAddOns(basket) {
+  if (notesInFlight > 0) return;
+  const addOns = basket.items.filter((item) => item.product_type === 'Add-on');
+  if (addOns.length === 0 || addOns.length < basket.items.length) return;
+
+  const sections = Array.from(document.querySelectorAll('cart-items-component'))
+    .map((element) => (element instanceof HTMLElement ? element.dataset.sectionId : ''))
+    .filter(Boolean);
+  const response = await fetch(`${cartRoot()}cart/update.js`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ updates: Object.fromEntries(addOns.map((item) => [item.key, 0])), sections: sections.join(',') }),
+  });
+  if (!response.ok) return;
+  const updated = await response.json();
+  document.dispatchEvent(
+    new CustomEvent('cart:update', {
+      bubbles: true,
+      detail: {
+        resource: updated,
+        sourceId: 'bb-note',
+        data: { source: 'bb-note', itemCount: updated.item_count, sections: updated.sections },
+      },
+    })
+  );
+}
+
+/** @param {Event | null} event */
+async function onBasketChange(event) {
+  const detail = /** @type {CustomEvent | null} */ (event)?.detail;
+  if (detail?.data?.didError) return;
+  const basket = await basketFrom(event).catch(() => null);
+  if (!basket) return;
+  showNotesInBasket(basket);
+  // The theme counts only the product it just added; the note went in too.
+  if (detail?.data?.source === 'product-form-component') {
+    for (const icon of document.querySelectorAll('cart-icon')) {
+      /** @type {any} */ (icon).renderCartBubble?.(basket.item_count, false, false);
+    }
+  }
+  await removeLonelyAddOns(basket).catch(() => {});
+}
+
+document.addEventListener('cart:update', onBasketChange);
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted && document.querySelector('[data-bb-note]')) onBasketChange(null);
+});
 
 /**
  * @param {ParentNode} scope

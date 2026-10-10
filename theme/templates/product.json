@@ -299,6 +299,7 @@
                 "placeholder": "Happy birthday! Love from…",
                 "max_length": 150,
                 "property_key": "Message",
+                "added_text": "Your note is in your basket.",
                 "empty_text": "Please write your message, or untick the note.",
                 "error_text": "Sorry, we couldn't add your note. Please try again.",
                 "padding-block-start": 0,
