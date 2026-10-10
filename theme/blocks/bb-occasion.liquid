@@ -1,0 +1,141 @@
+{%- doc -%}
+  Occasion choice for a product page. It looks like the variant buttons, but the
+  choice is saved on the order as a note (a line item property), so every occasion
+  shares the product's one stock count.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id
+  assign property_key = block_settings.property_key | default: block_settings.heading | default: 'Occasion'
+  assign choices = block_settings.choices | newline_to_br | split: '<br />'
+
+  assign longest_choice = 0
+  for choice in choices
+    assign choice_length = choice | strip | size
+    if choice_length > longest_choice
+      assign longest_choice = choice_length
+    endif
+  endfor
+
+  assign is_first = true
+-%}
+
+<div
+  class="variant-picker bb-occasion spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  {{ block.shopify_attributes }}
+>
+  <fieldset
+    class="variant-option variant-option--buttons variant-option--{{ settings.variant_button_width }}"
+    style="--variant-ch: {{ longest_choice | times: 0.65 }}em;"
+  >
+    <legend>{{ block_settings.heading | escape }}</legend>
+    {%- for choice in choices -%}
+      {%- assign choice_label = choice | strip -%}
+      {%- if choice_label != blank -%}
+        <label class="variant-option__button-label">
+          <input
+            type="radio"
+            name="properties[{{ property_key | escape }}]"
+            value="{{ choice_label | escape }}"
+            form="{{ product_form_id }}"
+            required
+            data-previous-checked="false"
+            {% if is_first %}
+              data-current-checked="true"
+              checked
+            {% else %}
+              data-current-checked="false"
+            {% endif %}
+          >
+          <span class="variant-option__button-label__pill"></span>
+          <span class="variant-option__button-label__text">{{ choice_label | escape }}</span>
+        </label>
+        {%- assign is_first = false -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </fieldset>
+</div>
+
+{% schema %}
+{
+  "name": "Occasion choice",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Buyers pick one option. It's saved on the order as a note, so stock stays shared."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Occasion"
+    },
+    {
+      "type": "textarea",
+      "id": "choices",
+      "label": "Choices",
+      "info": "One per line. The first is selected to start with.",
+      "default": "Birthday\nOther celebration"
+    },
+    {
+      "type": "text",
+      "id": "property_key",
+      "label": "Name on the order",
+      "default": "Occasion"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Occasion choice",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

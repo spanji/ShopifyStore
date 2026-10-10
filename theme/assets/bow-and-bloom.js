@@ -111,12 +111,36 @@ function enhanceQuestion(details) {
 }
 
 /**
+ * Occasion choice (blocks/bb-occasion.liquid): keeps the same previous/current
+ * markers the variant picker uses, so the selected pill slides between buttons.
+ * @param {ParentNode} root
+ */
+function enhanceOccasions(root) {
+  for (const fieldset of root.querySelectorAll('.bb-occasion fieldset')) {
+    const element = /** @type {HTMLFieldSetElement} */ (fieldset);
+    if (element.dataset.bbReady) continue;
+    element.dataset.bbReady = 'true';
+
+    element.addEventListener('change', (event) => {
+      const chosen = event.target;
+      if (!(chosen instanceof HTMLInputElement) || chosen.type !== 'radio') return;
+      for (const input of element.querySelectorAll('input[type="radio"]')) {
+        const radio = /** @type {HTMLInputElement} */ (input);
+        radio.dataset.previousChecked = String(radio.dataset.currentChecked === 'true');
+        radio.dataset.currentChecked = String(radio === chosen);
+      }
+    });
+  }
+}
+
+/**
  * @param {ParentNode} root
  */
 function init(root) {
   for (const details of root.querySelectorAll('details.bb-faq')) {
     enhanceQuestion(/** @type {HTMLDetailsElement} */ (details));
   }
+  enhanceOccasions(root);
   armReveals(root);
 }
 

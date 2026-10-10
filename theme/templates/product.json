@@ -305,12 +305,26 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "occasion": {
+              "type": "bb-occasion",
+              "settings": {
+                "heading": "Occasion",
+                "choices": "Birthday\nOther celebration",
+                "property_key": "Occasion",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "group_icgrde",
             "divider_VJhene",
             "variant_picker_R3rGDr",
+            "occasion",
             "gift_message",
             "buy_buttons_eYQEYi",
             "text_aEtTtq"
