@@ -5,8 +5,8 @@ The single source of truth for who the store is. Every skill reads this before w
 ## Business
 
 - **What we sell:** gift boxes and hampers: curated boxes of items, bought as gifts for birthdays and other occasions.
-- **Roadmap:** themed and seasonal ranges to follow (Christmas, Valentine's Day, and others to be decided).
-- **Store name:** Bow and Bloom (Shopify store settings, checked 9 Oct 2026)
+- **Roadmap:** themed and seasonal ranges to follow. Christmas 2026 skipped (owner, 10 Oct 2026). Next decisions: Valentine's and Galentine's by mid Nov, Mother's Day (7 Mar 2027) by early Dec. Calendar in `docs/seo-plan.md`.
+- **Store name:** written **Bow & Bloom** everywhere people read it, matching the logo; "bowandbloom" in web addresses and handles; "Bow and Bloom" kept as the alternate name in structured data (decided 10 Oct 2026, owner asked for whichever performs best). The Shopify store name still reads "Bow and Bloom" until the owner changes it in Settings → Store details.
 - **Market and country we ship to:** United Kingdom. Checkout ships to GB only (store settings, checked 9 Oct 2026). So: "hamper", "basket", UK spelling ("personalised"), prices shown including VAT, and the UK seasonal calendar.
 - **Currency:** GBP (£)
 - **Price range per box:** £39. One box at launch: Birthday Pamper Hamper for Her, with an Occasion option (Birthday or Other celebration) at the same price.
@@ -16,17 +16,19 @@ The single source of truth for who the store is. Every skill reads this before w
 - **Made by us or sourced:** all items are bought in, unbranded. Skincare, soaps and accessories come from overseas sites; sweets come from UK wholesalers, and the gummies are repacked into jars by us.
 - **Business set-up:** sole trader, run by Janna Serry, not yet registered with HMRC or for VAT. Policies show her name, the email and the mobile number.
 - **Address:** the owner agreed on 9 Oct 2026 to show the Bradford home address (17 Lady Royd Close, BD8 0FD) on the policies. No separate legal notice: the terms and contact information carry the name and address the UK rules ask for.
-- **Policies:** the owner chose on 9 Oct 2026 to run with no store policies, privacy included, and add them back later if needed. Short legal-minimum versions are ready in `docs/policies/` (paste page: `paste-into-shopify.html`; privacy is Shopify's own generator). Footer policy links and the FAQ's refund-policy link were removed; the theme's "Terms and Policies" footer link hides itself when no policies exist. Google Shopping needs a returns policy and contact details, so add those back before setting it up.
+- **Policies:** on 10 Oct 2026 the owner chose to add all five back (refund, privacy, terms, shipping, contact), short and promising nothing beyond the law and what the site already says. Text in `docs/policies/policies.md`; the owner pastes them in Settings → Policies. The theme's "Terms and Policies" footer link reappears once they exist. Google Shopping needs the refund policy and contact details.
 - **Food business registration:** registered with Bradford Council on 9 Oct 2026 (owner confirmed).
 - **Compliance (flags, not legal advice):** sweets' ingredients and allergens are on the product page and the FAQ answers allergens (10 Oct 2026). Distance-sold food is outside the PPDS (Natasha's Law) label rules, so the jar needs no sticker; FSA guidance says allergen information must still be given before purchase and again at delivery, in writing or orally, so for a posted box it goes in the box in writing. The owner chose on 10 Oct 2026 to give it online only, with no card in the box; one printed allergen line on the gift message card would meet the delivery duty if that changes. The chew bar and lollipop wrappers carry their own ingredients (owner, 10 Oct 2026). Still to do: check every skincare item and the soaps for an English ingredients list and a UK Responsible Person address, and swap any that fail for UK-wholesale versions.
 - **Corporate gifting:** yes or no, and minimum order: TBD
-- **Social accounts:** TikTok [@bowandbloomgiftboxes](https://www.tiktok.com/@bowandbloomgiftboxes); the store link is in its bio. No other accounts yet. The TikTok icon is in the "Bow and Bloom launch" theme footer.
-- **Domain:** none yet; the store runs on t4qigc-9u.myshopify.com.
+- **Apps and tools budget:** free only for now (owner, 10 Oct 2026). SEO and settings plan in `docs/seo-plan.md`.
+- **Social accounts:** TikTok [@bowandbloomgiftboxes](https://www.tiktok.com/@bowandbloomgiftboxes); the bio link goes straight to the product page with UTM tracking (owner, 10 Oct 2026). TikTok Shop: maybe later. Packing-order videos: yes, sometimes, with no names or addresses in shot and no tick box for buyers. No other accounts yet. The TikTok icon is in the theme footer.
+- **Domain:** none yet; the store runs on t4qigc-9u.myshopify.com. Owner decides on 11 Oct 2026. Checked 10 Oct: bowbloom.com taken; bowbloomgifts.com and bowbloomgiftboxes.com available; .co.uk names not checked yet.
 
 ## Audience
 
 - **Primary buyers:** friends buying for friends, partners, family (daughters, sisters, mums), and people treating themselves.
-- **Top occasions, in order:** TBD
+- **Main buyers (owner, 10 Oct 2026):** best friends, partners and girlfriends, and family (mum, sister, daughter). Birthdays first. Online only: no local collection, so no Google Business Profile.
+- **Top occasions, in order:** birthdays; the rest TBD
 - **What they worry about when buying a gift online:** TBD (arriving on time, looking good on opening, the recipient's dietary needs, ...)
 
 ## Positioning
