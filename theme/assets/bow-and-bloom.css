@@ -821,6 +821,7 @@ a.bb-cta::before {
 
 .bb-cta__label {
   flex: 1 1 auto;
+  white-space: nowrap;
 }
 
 .bb-cta__price {
@@ -888,6 +889,19 @@ a.bb-cta--small .bb-cta__price {
   a.bb-cta--full {
     display: flex;
     inline-size: 100%;
+  }
+}
+
+/* The smallest phones: keep label, price and arrow on one line. */
+@media screen and (max-width: 359px) {
+  a.bb-cta {
+    gap: 0.6rem;
+    padding-inline-start: 1.15rem;
+    font-size: 0.975rem;
+  }
+
+  .bb-cta__price {
+    padding-inline-start: 0.6rem;
   }
 }
 
