@@ -269,12 +269,14 @@ a.link {
 .product-information .add-to-cart-button,
 .sticky-add-to-cart__button.add-to-cart-button {
   --button-padding-block: 1.05rem;
+  --button-background-color: color-mix(in srgb, var(--color-primary-button-background) 84%, #2a1514);
+  --button-border-color: var(--button-background-color);
   font-size: 1.0625rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   background-image:
     var(--bb-satin),
-    linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0) 60%);
+    linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0) 55%);
   background-size: 260% 100%, 100% 100%;
   background-position: 170% 0, 0 0;
   box-shadow:
@@ -282,17 +284,21 @@ a.link {
     0 10px 24px -16px rgb(var(--color-primary-rgb) / 0.9);
 }
 
-/* Swap the cart icon for the bow. */
-.product-information .add-to-cart-icon,
-.sticky-add-to-cart__button .add-to-cart-icon {
+.product-information .rte > h3 {
+  font-size: clamp(1.45rem, 1.25rem + 0.8vw, 1.85rem);
+  margin-block: 1.6rem 0.9rem;
+}
+
+/* Swap the cart icon for the bow on the main button, where the words sit beside it.
+   The quick-add bar keeps the basket icon, because on phones it shows the icon alone. */
+.product-information .add-to-cart-icon {
   inline-size: 1.75em;
   block-size: 1.05em;
   background-color: currentcolor;
   mask: var(--bb-bow) center / contain no-repeat;
 }
 
-.product-information .add-to-cart-icon > svg,
-.sticky-add-to-cart__button .add-to-cart-icon > svg {
+.product-information .add-to-cart-icon > svg {
   display: none;
 }
 
@@ -305,27 +311,14 @@ a.link {
   @media (hover: hover) {
     .product-information .add-to-cart-button:not(:disabled):hover,
     .sticky-add-to-cart__button.add-to-cart-button:not(:disabled):hover {
+      --button-background-color: var(--color-primary-button-hover-background);
+      --button-border-color: var(--color-primary-button-hover-border);
       background-position: -70% 0, 0 0;
     }
 
-    .product-information .add-to-cart-button:hover .add-to-cart-icon,
-    .sticky-add-to-cart__button:hover .add-to-cart-icon {
+    .product-information .add-to-cart-button:hover .add-to-cart-icon {
       animation: bb-wiggle 0.6s var(--bb-ease-out);
     }
-  }
-
-  /* A bow floats up when the box goes in the basket. */
-  .add-to-cart-button[data-added='true'] .add-to-cart__added::after {
-    content: '';
-    position: absolute;
-    inset-block-start: -0.4rem;
-    inset-inline-start: 50%;
-    inline-size: 2.4rem;
-    aspect-ratio: 80 / 48;
-    background-color: currentcolor;
-    mask: var(--bb-bow) center / contain no-repeat;
-    animation: bb-float 0.9s var(--bb-ease-out) both;
-    pointer-events: none;
   }
 }
 
@@ -355,25 +348,6 @@ a.link {
   }
 }
 
-@keyframes bb-float {
-  0% {
-    opacity: 0;
-    translate: -50% 40%;
-    scale: 0.4;
-  }
-  35% {
-    opacity: 1;
-    translate: -50% -60%;
-    scale: 1.1;
-  }
-  100% {
-    opacity: 0;
-    translate: -50% -190%;
-    scale: 0.9;
-    rotate: 12deg;
-  }
-}
-
 /* The quick-add bar that slides up on phones gets a ribbon edge. */
 .sticky-add-to-cart__bar {
   background-image: linear-gradient(
@@ -387,24 +361,30 @@ a.link {
   background-repeat: no-repeat;
 }
 
-/* ---------- Occasion options: the chosen one gets a bow ---------- */
+/* ---------- Occasion options: a bow ties itself onto the chosen one ---------- */
+
+.variant-option__button-label .variant-option__button-label__text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .variant-option__button-label .variant-option__button-label__text::before {
   content: '';
-  position: absolute;
-  inset-block-start: -0.55rem;
-  inset-inline-end: 0.6rem;
-  inline-size: 1.6rem;
+  flex: none;
+  inline-size: 0;
   aspect-ratio: 80 / 48;
-  background-color: var(--color-primary-button-background);
+  margin-inline-end: 0;
+  background-color: currentcolor;
   mask: var(--bb-bow) center / contain no-repeat;
   opacity: 0;
   scale: 0.3;
   rotate: -20deg;
-  pointer-events: none;
 }
 
 .variant-option__button-label:has(input:checked) .variant-option__button-label__text::before {
+  inline-size: 1.35em;
+  margin-inline-end: 0.45em;
   opacity: 1;
   scale: 1;
   rotate: 0deg;
@@ -412,7 +392,12 @@ a.link {
 
 @media (prefers-reduced-motion: no-preference) {
   .variant-option__button-label .variant-option__button-label__text::before {
-    transition: opacity 0.2s, scale 0.45s var(--bb-ease-tie), rotate 0.45s var(--bb-ease-tie);
+    transition:
+      inline-size 0.3s var(--bb-ease-out),
+      margin 0.3s var(--bb-ease-out),
+      opacity 0.2s,
+      scale 0.5s var(--bb-ease-tie),
+      rotate 0.5s var(--bb-ease-tie);
   }
 
   @media (hover: hover) {
@@ -536,6 +521,7 @@ product-custom-property-component .__heading::before {
   align-items: center;
   gap: 0.6rem;
   margin-block: 2.4rem 0.6rem;
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
 }
 
 .rte h2:has(+ details.bb-faq)::before {
@@ -579,9 +565,9 @@ product-custom-property-component .__heading::before {
     opacity: 0;
     translate: 0 14px;
     transition:
-      opacity 0.6s var(--bb-ease-out),
-      translate 0.6s var(--bb-ease-out);
-    transition-delay: calc(var(--bb-i, 0) * 70ms);
+      opacity 0.5s var(--bb-ease-out),
+      translate 0.5s var(--bb-ease-out);
+    transition-delay: calc(var(--bb-i, 0) * 55ms);
   }
 
   .bb-reveal.is-revealed {

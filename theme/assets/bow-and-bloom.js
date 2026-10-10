@@ -29,7 +29,7 @@ const revealObserver =
             if (!entry.isIntersecting) continue;
             const element = /** @type {HTMLElement} */ (entry.target);
             // Stagger items that arrive together, however far down the list they are.
-            element.style.setProperty('--bb-i', String(Math.min(order++, 8)));
+            element.style.setProperty('--bb-i', String(Math.min(order++, 6)));
             element.classList.add('is-revealed');
             revealObserver?.unobserve(element);
           }
