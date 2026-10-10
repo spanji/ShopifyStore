@@ -58,3 +58,5 @@ Sources, pinned commits and licences are in `docs/third-party-skills.md`. Update
 - Theme lint (once the theme is in the repo and Shopify CLI is installed): `shopify theme check`
 
 The cloud environment must allow `*.myshopify.com` and `*.shopify.com` before previews, screenshots of the store or Shopify CLI can work.
+
+The store is bowandbloomgifts.myshopify.com (t4qigc-9u.myshopify.com redirects there). Shopify's bot protection rate-limits automated browsers: after a burst of page loads it answers "Just a moment…" or 429 for a few minutes, and this environment can't load the challenge, so space out screenshot and test runs and retry later. A Web Bot Auth signature (Online Store → Preferences → Crawler access), stored as an environment secret, would lift the limit.
