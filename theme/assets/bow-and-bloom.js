@@ -534,9 +534,11 @@ window.addEventListener(
   'submit',
   (event) => {
     const form = event.target;
-    if (!(form instanceof HTMLFormElement) || !form.id || form.dataset.bbNotePassing) return;
+    // getAttribute: the form's own "id" input hides form.id.
+    const formId = form instanceof HTMLFormElement ? form.getAttribute('id') : null;
+    if (!(form instanceof HTMLFormElement) || !formId || form.dataset.bbNotePassing) return;
     // The note for this form, in the same window (the page or a quick-add dialog).
-    const note = Array.from(document.querySelectorAll(`[data-bb-note][data-form-id="${CSS.escape(form.id)}"]`)).find(
+    const note = Array.from(document.querySelectorAll(`[data-bb-note][data-form-id="${CSS.escape(formId)}"]`)).find(
       (candidate) => candidate.closest('dialog') === form.closest('dialog')
     );
     const check = note?.querySelector('.bb-note__check');
