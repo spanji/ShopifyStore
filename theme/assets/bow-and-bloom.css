@@ -866,15 +866,25 @@ product-custom-property-component .__heading::before {
   }
 }
 
+/* The ribbon is also faded out at both ends of its draw: a fully hidden dash still
+   paints its round line caps as two small dots. */
 @keyframes bb-ribbon-draw {
   from {
     stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
   }
 }
 
 @keyframes bb-ribbon-out {
+  88% {
+    opacity: 0.5;
+  }
   to {
     stroke-dashoffset: -1;
+    opacity: 0;
   }
 }
 
