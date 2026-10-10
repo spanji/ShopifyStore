@@ -560,6 +560,13 @@
     text-align: center;
   }
 
+  /* The title measures its own width (container-type) so it must be given one;
+     centred grid items otherwise shrink it to nothing. */
+  .bb-hero--fullscreen .bb-hero__title {
+    justify-self: stretch;
+    inline-size: 100%;
+  }
+
   .bb-hero--fullscreen .bb-hero__sub {
     max-inline-size: 42ch;
     margin-inline: auto;
