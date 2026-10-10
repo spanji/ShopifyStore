@@ -9,7 +9,7 @@ The single source of truth for who the store is. Every skill reads this before w
 - **Store name:** written **Bow & Bloom** everywhere people read it, matching the logo; "bowandbloom" in web addresses and handles; "Bow and Bloom" kept as the alternate name in structured data (decided 10 Oct 2026, owner asked for whichever performs best). The Shopify store name still reads "Bow and Bloom" until the owner changes it in Settings → Store details.
 - **Market and country we ship to:** United Kingdom. Checkout ships to GB only (store settings, checked 9 Oct 2026). So: "hamper", "basket", UK spelling ("personalised"), prices shown including VAT, and the UK seasonal calendar.
 - **Currency:** GBP (£)
-- **Price range per box:** £39. One box at launch: Birthday Pamper Hamper for Her. Since 10 Oct 2026 it has one variant and one shared stock count; buyers pick Birthday or Other celebration with an Occasion choice that is saved on the order as a note (theme block `bb-occasion`, in the v3 theme), because both use the same items with different tags. Google category: Bath & Body Gift Sets, with category fields Pink, Female, Adults, Gift box, Special occasion.
+- **Price range per box:** £39. One box at launch: Birthday Pamper Hamper for Her. Since 10 Oct 2026 it has one variant and one shared stock count; buyers pick Birthday or Other celebration with an Occasion choice that is saved on the order as a note (theme block `bb-occasion`, in the v3 theme), because both use the same items with different tags. Choosing Other celebration opens an optional "What's the occasion?" box (up to 40 characters), saved as "Occasion details"; the owner uses it for the tags or card. Google category: Bath & Body Gift Sets, with category fields Pink, Female, Adults, Gift box, Special occasion.
 - **Delivery:** Evri, UK only. Free tracked delivery (2–5 working days) on every order. Next day £2.99, worded "usually next working day" because Evri doesn't guarantee it. Order by 12pm Mon–Sat for same-day dispatch; Sunday orders go out Monday.
 - **What goes in the boxes:** pamper and beauty (skincare, soaps), accessories (socks, hair accessories, sleep mask, keyring, mirror, phone grip) and sweets. No alcohol.
 - **Dietary range:** the launch box isn't gluten-free, vegetarian or vegan: two of the jar sweets contain wheat, the chew bar contains soya, and most gummies contain beef gelatine. No alcohol. Full record in `docs/allergens.md`.
@@ -33,7 +33,7 @@ The single source of truth for who the store is. Every skill reads this before w
 
 ## Positioning
 
-- **One-sentence promise:** Gifts for every moment (tagline in the logo). Card line: "Small gifts for big moments".
+- **One-sentence promise:** Gifts for every moment (tagline in the logo; also the slogan in Settings → Brand). Brand short description: "Pamper hampers for her, packed by hand in Yorkshire and tied with a satin bow. Free tracked UK delivery." Card line: "Small gifts for big moments".
 - **Why us over the alternatives:** a personal, warm voice where competitors are generic; a beautifully presented pink box with 17 items; free tracked delivery at £39.
 - **Competitors and references** (stores the owner admires or competes with): marketplace pamper boxes at £14–£33 with keyword-stuffed titles (Amazon and YPC-style listings), charity-shop letterbox hampers, and Hampers.com. Most charge delivery under £50.
 
