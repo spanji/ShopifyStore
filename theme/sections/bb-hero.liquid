@@ -1,44 +1,23 @@
 {% comment %}
-  Bow and Bloom homepage hero.
-  - A headline whose last words change ("Hampers for your best friend / sister / mum..."),
-    in rosewood italic with a ribbon that draws itself under each one. Search engines
-    and screen readers get the whole sentence once; the moving copy is hidden from them.
-  - The berry buy button with the live price, trust points, and the banner in a frame
-    with wrapping paper peeking out behind it, a slowly turning price badge and a few
-    floating bows. A pause button stops every looping animation on the page.
-  - On the first visit of a browser session the wrapping opens: a big bow ties itself,
-    the ribbons unroll, then the paper parts and the bow settles above the headline.
-    snippets/scripts.liquid flags the visit in <head>; assets/bow-and-bloom.js runs the
-    words, the pause button, the skip and the floating phone button.
+  Bow and Bloom homepage hero, in two layouts:
+  - Framed: the photo sits in a rounded frame with bow-print wrapping paper behind
+    it, beside (desktop) or under (phones) the headline and button.
+  - Banner: the photo fills the right of the screen to its edge on desktop and the
+    full width above the headline on phones.
+  Both carry the headline (optionally ending in changing words, snippets/bb-rotator),
+  the berry buy button with the live price, trust points, a slowly turning price
+  badge, floating bows and a pause button that stops every looping animation.
+  On the first visit of a browser session the wrapping opens: a big bow ties itself,
+  the ribbons unroll, the paper parts and the bow settles above the headline.
+  snippets/scripts.liquid flags the visit in <head>; assets/bow-and-bloom.js runs the
+  words, the pause button, the skip and the floating phone button.
   Without JavaScript, or with reduced motion, everything shows still and complete.
 {% endcomment %}
 
 {%- liquid
   assign s = section.settings
   assign product = s.product
-
-  assign raw_words = s.words | newline_to_br | split: '<br />'
-  assign word_list = ''
-  for raw_word in raw_words
-    assign clean_word = raw_word | strip | replace: '|', ''
-    if clean_word != blank
-      assign word_list = word_list | append: clean_word | append: '|'
-    endif
-  endfor
-  assign words = word_list | split: '|'
-  assign first_word = words.first
-
-  capture spoken_words
-    for word in words
-      if forloop.first
-        echo word
-      elsif forloop.last
-        echo ' or ' | append: word
-      else
-        echo ', ' | append: word
-      endif
-    endfor
-  endcapture
+  assign layout = s.layout | default: 'framed'
 
   assign button_url = s.button_link
   if button_url == blank and product != blank
@@ -58,18 +37,43 @@
   endif
 
   assign image_alt = s.image.alt | default: s.image_alt
+
+  if layout == 'banner'
+    assign image_sizes = '(min-width: 750px) 58vw, 100vw'
+    assign image_widths = '480, 720, 960, 1200, 1500'
+  elsif s.image_ratio == 'landscape'
+    assign image_sizes = '(min-width: 750px) 52vw, calc(100vw - 32px)'
+    assign image_widths = '480, 720, 960, 1200, 1500'
+  else
+    assign image_sizes = '(min-width: 750px) min(40vw, 520px), calc(100vw - 32px)'
+    assign image_widths = '400, 600, 800, 1000, 1200'
+  endif
 -%}
+
+{%- capture floating_bows -%}
+  {%- if s.show_bows -%}
+    {%- for i in (1..5) -%}
+      <span
+        class="bb-float bb-hero__float--{{ i }}"
+        aria-hidden="true"
+      ></span>
+    {%- endfor -%}
+  {%- endif -%}
+{%- endcapture -%}
 
 <div class="section-background color-{{ s.color_scheme }}"></div>
 <div
   id="BbHero-{{ section.id }}"
-  class="section bb-hero color-{{ s.color_scheme }} spacing-style"
+  class="section bb-hero bb-hero--{{ layout }} bb-hero--{{ s.image_ratio | default: 'landscape' }} color-{{ s.color_scheme }} spacing-style"
   style="{% render 'spacing-style', settings: s %}"
   data-pause-label="{{ s.pause_label | escape }}"
   data-play-label="{{ s.play_label | escape }}"
 >
   <div class="bb-hero__inner">
     <div class="bb-hero__text">
+      {%- if layout == 'banner' -%}
+        {{ floating_bows }}
+      {%- endif -%}
       <span
         class="bb-hero__bow"
         aria-hidden="true"
@@ -82,41 +86,8 @@
           style="--d: 0.05s;"
           >{{- s.heading_lead | escape -}}</span
         >
-        {%- if words.size > 0 -%}
-          <span class="visually-hidden"> {{ spoken_words | strip | escape }}</span>
-          <span
-            class="bb-rotator"
-            aria-hidden="true"
-            data-words="{{ words | json | escape }}"
-            data-seconds="{{ s.word_seconds }}"
-          >
-            {%- assign chars = first_word | split: '' -%}
-            <span
-              class="bb-rotator__word bb-rotator__word--first"
-              style="--n: {{ chars.size }};"
-            >
-              {%- comment -%}
-                Letters are drawn from data-c by CSS, so the page text (and the h1 Google
-                reads) holds the full sentence once, not the sentence plus this word.
-              {%- endcomment -%}
-              {%- for char in chars -%}
-                <span
-                  class="bb-rotator__char"
-                  data-c="{{ char | escape }}"
-                  style="--i: {{ forloop.index0 }};"
-                ></span>
-              {%- endfor -%}
-              <svg
-                class="bb-rotator__ribbon"
-                viewBox="0 0 200 12"
-                preserveAspectRatio="none"
-                focusable="false"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path pathLength="1" d="M2 8.2C34 3.4 62 10.6 101 6.6S168 3.2 198 7.4" />
-              </svg>
-            </span>
-          </span>
+        {%- if s.words != blank -%}
+          {% render 'bb-rotator', words: s.words, seconds: s.word_seconds %}
         {%- endif -%}
       </h1>
 
@@ -174,8 +145,8 @@
             | image_url: width: 1600
             | image_tag:
               class: 'bb-hero__image',
-              widths: '480, 720, 960, 1200, 1600',
-              sizes: '(min-width: 750px) 52vw, calc(100vw - 32px)',
+              widths: image_widths,
+              sizes: image_sizes,
               loading: 'eager',
               fetchpriority: 'high',
               alt: image_alt
@@ -224,13 +195,8 @@
         </div>
       {%- endif -%}
 
-      {%- if s.show_bows -%}
-        {%- for i in (1..5) -%}
-          <span
-            class="bb-hero__float bb-hero__float--{{ i }}"
-            aria-hidden="true"
-          ></span>
-        {%- endfor -%}
+      {%- if layout != 'banner' -%}
+        {{ floating_bows }}
       {%- endif -%}
 
       <button
@@ -262,6 +228,21 @@
     </div>
   </div>
 </div>
+
+{%- if s.close_up_next -%}
+  {%- comment -%}
+    When the next photo on the page is this same one, show it as a close-up so the
+    page doesn't repeat itself (until a real close-up photo is uploaded).
+  {%- endcomment -%}
+  <style>
+    #shopify-section-{{ section.id }} ~ .shopify-section .media-with-content .media-block img {
+      --bb-unwrap-scale: 1.85;
+      object-position: {{ s.close_up_focus | default: '30% 60%' }};
+      transform-origin: {{ s.close_up_focus | default: '30% 60%' }};
+      scale: 1.6;
+    }
+  </style>
+{%- endif -%}
 
 {%- if s.floating_button and button_url != blank -%}
   {% render 'bb-cta', url: button_url, label: s.button_label, price: price, class: 'bb-float-cta' %}
@@ -318,7 +299,6 @@
 
   .bb-hero {
     --bb-hero-delay: 0.1s;
-    --bb-word-colour: var(--color-primary);
     --bb-frame-radius: 22px;
 
     overflow-x: clip;
@@ -362,6 +342,7 @@
   }
 
   .bb-hero__title {
+    container-type: inline-size;
     margin: 0;
     font-family: var(--font-heading--family);
     font-weight: var(--font-heading--weight);
@@ -374,57 +355,6 @@
   .bb-hero__lead {
     display: block;
     text-wrap: balance;
-  }
-
-  .bb-rotator {
-    position: relative;
-    display: block;
-    min-block-size: 1.2em;
-    padding-block-end: 0.12em;
-    font-size: 1.1em;
-    font-style: italic;
-    line-height: 1.1;
-    white-space: nowrap;
-    color: var(--bb-word-colour);
-  }
-
-  .bb-rotator__word {
-    position: relative;
-    display: inline-block;
-  }
-
-  .bb-rotator__word.is-out {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-  }
-
-  .bb-rotator__char {
-    display: inline-block;
-    white-space: pre;
-  }
-
-  .bb-rotator__char::before {
-    content: attr(data-c);
-  }
-
-  .bb-rotator__ribbon {
-    position: absolute;
-    inset-inline-start: -0.04em;
-    inset-block-end: -0.12em;
-    inline-size: calc(100% + 0.1em);
-    block-size: 0.24em;
-    overflow: visible;
-  }
-
-  .bb-rotator__ribbon path {
-    fill: none;
-    stroke: currentcolor;
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 0;
-    opacity: 0.5;
   }
 
   .bb-hero__sub {
@@ -460,7 +390,7 @@
     mask: var(--bb-bow) center / contain no-repeat;
   }
 
-  /* ---------- Banner, wrapping paper, badge and bows ---------- */
+  /* ---------- Framed photo, wrapping paper, badge and bows ---------- */
 
   .bb-hero__media {
     position: relative;
@@ -468,8 +398,8 @@
   }
 
   /* Wrapping paper peeking out from behind the photo: a petal sheet with a bow print. */
-  .bb-hero__media::before,
-  .bb-hero__media::after {
+  .bb-hero--framed .bb-hero__media::before,
+  .bb-hero--framed .bb-hero__media::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -478,11 +408,11 @@
     rotate: 2deg;
   }
 
-  .bb-hero__media::before {
+  .bb-hero--framed .bb-hero__media::before {
     background-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-background));
   }
 
-  .bb-hero__media::after {
+  .bb-hero--framed .bb-hero__media::after {
     background-color: rgb(var(--color-foreground-rgb) / 0.11);
     mask: var(--bb-pattern) 0 0 / 88px repeat;
   }
@@ -497,15 +427,34 @@
     box-shadow: 0 34px 60px -34px rgb(var(--color-shadow-rgb) / 0.55);
   }
 
+  .bb-hero--framed.bb-hero--portrait .bb-hero__frame {
+    aspect-ratio: 4 / 5;
+  }
+
+  .bb-hero--framed.bb-hero--square .bb-hero__frame {
+    aspect-ratio: 1;
+  }
+
   @media screen and (min-width: 750px) {
     .bb-hero__media {
       margin-inline-end: 0;
     }
 
-    .bb-hero__media::before,
-    .bb-hero__media::after {
+    .bb-hero--framed .bb-hero__media::before,
+    .bb-hero--framed .bb-hero__media::after {
       translate: 18px 18px;
       rotate: 2.5deg;
+    }
+
+    /* Upright photos keep to the screen height and sit centred in their column. */
+    .bb-hero--framed.bb-hero--portrait .bb-hero__media {
+      justify-self: center;
+      inline-size: min(100%, calc(min(72svh, 620px) * 0.8));
+    }
+
+    .bb-hero--framed.bb-hero--square .bb-hero__media {
+      justify-self: center;
+      inline-size: min(100%, min(72svh, 600px));
     }
   }
 
@@ -520,6 +469,52 @@
     block-size: 100%;
     object-fit: cover;
   }
+
+  /* ---------- Banner: the photo fills the right of the screen (phones: the top) ---------- */
+
+  .bb-hero--banner .bb-hero__inner {
+    grid-column: 1 / -1;
+    gap: 0;
+    padding-block: 0;
+  }
+
+  .bb-hero--banner .bb-hero__media {
+    order: -1;
+    margin: 0;
+  }
+
+  .bb-hero--banner .bb-hero__frame {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .bb-hero--banner .bb-hero__text {
+    padding: 1.6rem var(--page-margin) 2.75rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-hero--banner .bb-hero__inner {
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 3.5fr);
+      align-items: stretch;
+      min-block-size: 0;
+    }
+
+    .bb-hero--banner .bb-hero__media {
+      order: 0;
+    }
+
+    .bb-hero--banner .bb-hero__frame {
+      block-size: 100%;
+    }
+
+    .bb-hero--banner .bb-hero__text {
+      align-self: center;
+      padding-block: 3rem;
+      padding-inline: var(--util-page-margin-offset, 40px) clamp(2rem, 4vw, 4.5rem);
+    }
+  }
+
+  /* ---------- Price badge ---------- */
 
   .bb-badge {
     position: absolute;
@@ -538,11 +533,23 @@
       0 16px 30px -18px rgb(var(--color-shadow-rgb) / 0.6);
   }
 
+  .bb-hero--banner .bb-badge {
+    inset-block-end: 0.9rem;
+    inline-size: 5.6rem;
+  }
+
   @media screen and (min-width: 750px) {
     .bb-badge {
       inset-block-end: -3rem;
       inset-inline-start: -3rem;
       inset-inline-end: auto;
+      inline-size: 8.4rem;
+    }
+
+    /* On the banner the badge sits on the seam between the words and the photo. */
+    .bb-hero--banner .bb-badge {
+      inset-block-end: 2.75rem;
+      inset-inline-start: -4.2rem;
       inline-size: 8.4rem;
     }
   }
@@ -582,38 +589,57 @@
     line-height: 1;
   }
 
+  .bb-hero--banner .bb-badge__bow {
+    inline-size: 1.25rem;
+  }
+
+  .bb-hero--banner .bb-badge__price {
+    font-size: 1.35rem;
+  }
+
   @media screen and (min-width: 750px) {
-    .bb-badge__price {
+    .bb-badge__price,
+    .bb-hero--banner .bb-badge__price {
       font-size: 1.9rem;
+    }
+
+    .bb-hero--banner .bb-badge__bow {
+      inline-size: 1.5rem;
     }
   }
 
-  .bb-hero__float {
-    position: absolute;
-    z-index: 2;
-    inline-size: var(--size, 2rem);
-    aspect-ratio: 80 / 48;
-    background-color: var(--colour, var(--color-primary));
-    mask: var(--bb-bow) center / contain no-repeat;
-    opacity: var(--alpha, 0.5);
-    rotate: var(--r, 0deg);
-    pointer-events: none;
-  }
+  /* ---------- Floating bows (assets/bow-and-bloom.css: .bb-float) ---------- */
 
   .bb-hero__float--1 { --size: 2.6rem; --alpha: 0.55; --r: -14deg; inset-block-start: -1.4rem; inset-inline-start: 12%; }
-  .bb-hero__float--2 { --size: 1.4rem; --alpha: 0.4; --r: 18deg; inset-block-start: 18%; inset-inline-end: -0.6rem; }
-  .bb-hero__float--3 { --size: 1.9rem; --alpha: 0.35; --r: 10deg; inset-block-end: 24%; inset-inline-start: -0.9rem; }
-  .bb-hero__float--4 { --size: 1.1rem; --alpha: 0.45; --r: 24deg; inset-block-start: -0.6rem; inset-inline-end: 22%; }
-  .bb-hero__float--5 { --size: 1.6rem; --alpha: 0.3; --r: -20deg; inset-block-end: -1.6rem; inset-inline-start: 38%; }
+  .bb-hero__float--2 { --size: 1.4rem; --alpha: 0.4; --r: 18deg; inset-block-start: 18%; inset-inline-end: -0.6rem; --k: 1; }
+  .bb-hero__float--3 { --size: 1.9rem; --alpha: 0.35; --r: 10deg; inset-block-end: 24%; inset-inline-start: -0.9rem; --k: 2; }
+  .bb-hero__float--4 { --size: 1.1rem; --alpha: 0.45; --r: 24deg; inset-block-start: -0.6rem; inset-inline-end: 22%; --k: 3; }
+  .bb-hero__float--5 { --size: 1.6rem; --alpha: 0.3; --r: -20deg; inset-block-end: -1.6rem; inset-inline-start: 38%; --k: 4; }
+
+  /* On the banner the bows drift in the space beside the headline, never over the photo. */
+  .bb-hero--banner .bb-hero__float--1 { inset: 1.4rem 6% auto auto; --size: 2.2rem; }
+  .bb-hero--banner .bb-hero__float--2 { inset: 34% 3% auto auto; --size: 1.25rem; }
+  .bb-hero--banner .bb-hero__float--3 { inset: auto 14% 16% auto; --size: 1.6rem; }
+  .bb-hero--banner .bb-hero__float--4 { inset: 3.4rem 24% auto auto; --size: 1rem; }
+  .bb-hero--banner .bb-hero__float--5 { display: none; }
+
+  .bb-hero .bb-float {
+    --bb-float-delay: calc(var(--bb-hero-delay) + 0.6s);
+  }
 
   @media screen and (max-width: 749px) {
     .bb-hero__float--3,
     .bb-hero__float--5 {
       display: none;
     }
+
+    .bb-hero--banner .bb-hero__float--2 {
+      inset: 5.2rem 4% auto auto;
+    }
   }
 
-  /* Pause button: stops every looping animation on the page (WCAG 2.2.2). */
+  /* ---------- Pause button: stops every looping animation on the page (WCAG 2.2.2) ---------- */
+
   .bb-motion-toggle {
     position: absolute;
     z-index: 3;
@@ -684,34 +710,15 @@
     }
 
     .bb-hero [data-bb-enter] {
-      animation: bb-hero-in 0.9s var(--bb-ease-out) both;
+      animation: bb-rise 0.9s var(--bb-ease-out) both;
       animation-delay: calc(var(--bb-hero-delay) + var(--d, 0s));
     }
 
-    .bb-rotator__word--first {
+    .bb-hero .bb-rotator__word--first {
       --bb-word-delay: calc(var(--bb-hero-delay) + 0.2s);
     }
 
-    .bb-rotator__char {
-      animation: bb-char-in 0.75s var(--bb-ease-out) both;
-      animation-delay: calc(var(--bb-word-delay, 0s) + var(--i, 0) * 34ms);
-    }
-
-    .bb-rotator__ribbon path {
-      animation: bb-ribbon-draw 0.8s var(--bb-ease-out) both;
-      animation-delay: calc(var(--bb-word-delay, 0s) + 0.35s + var(--n, 6) * 34ms);
-    }
-
-    .bb-rotator__word.is-out .bb-rotator__char {
-      animation: bb-char-out 0.42s cubic-bezier(0.55, 0, 0.75, 0.2) both;
-      animation-delay: calc(var(--i, 0) * 16ms);
-    }
-
-    .bb-rotator__word.is-out .bb-rotator__ribbon path {
-      animation: bb-ribbon-out 0.3s ease-in both;
-    }
-
-    .bb-hero__frame {
+    .bb-hero--framed .bb-hero__frame {
       animation: bb-frame-in 1.3s var(--bb-ease-out) var(--bb-hero-delay) both;
     }
 
@@ -719,8 +726,8 @@
       animation: bb-image-settle 1.8s var(--bb-ease-out) var(--bb-hero-delay) both;
     }
 
-    .bb-hero__media::before,
-    .bb-hero__media::after {
+    .bb-hero--framed .bb-hero__media::before,
+    .bb-hero--framed .bb-hero__media::after {
       animation: bb-paper-in 1.3s var(--bb-ease-tie) calc(var(--bb-hero-delay) + 0.25s) both;
     }
 
@@ -731,17 +738,6 @@
     .bb-badge__ring {
       animation: bb-spin 24s linear infinite;
     }
-
-    .bb-hero__float {
-      animation:
-        bb-float-in 0.8s var(--bb-ease-tie) calc(var(--bb-hero-delay) + 0.6s + var(--k, 0) * 0.12s) both,
-        bb-float 7s ease-in-out calc(var(--bb-hero-delay) + 1.4s + var(--k, 0) * 0.9s) infinite alternate;
-    }
-
-    .bb-hero__float--2 { --k: 1; }
-    .bb-hero__float--3 { --k: 2; }
-    .bb-hero__float--4 { --k: 3; }
-    .bb-hero__float--5 { --k: 4; }
 
     /* After the intro the bow above the headline appears where the big bow lands. */
     .bb-hero[data-intro='on'] {
@@ -754,41 +750,6 @@
 
     .bb-hero[data-intro='skipped'] {
       --bb-hero-delay: 0s;
-    }
-  }
-
-  @keyframes bb-hero-in {
-    from {
-      opacity: 0;
-      translate: 0 22px;
-    }
-  }
-
-  @keyframes bb-char-in {
-    from {
-      opacity: 0;
-      translate: 0 0.5em;
-      filter: blur(8px);
-    }
-  }
-
-  @keyframes bb-char-out {
-    to {
-      opacity: 0;
-      translate: 0 -0.4em;
-      filter: blur(6px);
-    }
-  }
-
-  @keyframes bb-ribbon-draw {
-    from {
-      stroke-dashoffset: 1;
-    }
-  }
-
-  @keyframes bb-ribbon-out {
-    to {
-      stroke-dashoffset: -1;
     }
   }
 
@@ -826,24 +787,6 @@
     }
   }
 
-  @keyframes bb-float-in {
-    from {
-      opacity: 0;
-      scale: 0.2;
-    }
-  }
-
-  @keyframes bb-float {
-    from {
-      translate: 0 0;
-      rotate: calc(var(--r, 0deg) - 6deg);
-    }
-    to {
-      translate: 0 -12px;
-      rotate: calc(var(--r, 0deg) + 6deg);
-    }
-  }
-
   @keyframes bb-appear {
     from {
       opacity: 0;
@@ -873,26 +816,44 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "framed",
+          "label": "Framed photo beside the words"
+        },
+        {
+          "value": "banner",
+          "label": "Banner filling the side of the screen"
+        }
+      ],
+      "default": "framed"
+    },
+    {
       "type": "header",
       "content": "Headline"
     },
     {
       "type": "text",
       "id": "heading_lead",
-      "label": "Start of the headline",
+      "label": "Headline",
+      "info": "With changing words, this is the start of the sentence.",
       "default": "Hampers for your"
     },
     {
       "type": "textarea",
       "id": "words",
       "label": "Changing words",
-      "info": "One per line. Each must finish the headline as a sentence.",
+      "info": "Optional. One per line; each must finish the headline as a sentence. Leave empty for a still headline.",
       "default": "best friend\ngirlfriend\nsister\nmum\ndaughter"
     },
     {
       "type": "range",
       "id": "word_seconds",
       "label": "Seconds per word",
+      "info": "The least time each word stays. Longer words stay a little longer.",
       "min": 2,
       "max": 6,
       "step": 0.5,
@@ -948,14 +909,48 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Image",
-      "info": "3:2 landscape works best."
+      "label": "Image"
     },
     {
       "type": "text",
       "id": "image_alt",
       "label": "Image description",
       "info": "Used when the image has no alt text of its own."
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Frame shape",
+      "info": "Framed layout only. The banner keeps 3:2.",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "Landscape (3:2)"
+        },
+        {
+          "value": "portrait",
+          "label": "Upright (4:5)"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "checkbox",
+      "id": "close_up_next",
+      "label": "Show the next photo as a close-up",
+      "info": "Turn on when the section below uses this same photo, so the page doesn't repeat itself.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "close_up_focus",
+      "label": "Close-up focus",
+      "info": "Across and down, e.g. 30% 60%.",
+      "default": "30% 60%"
     },
     {
       "type": "checkbox",

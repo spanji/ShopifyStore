@@ -107,13 +107,19 @@ function initIntro() {
   });
 }
 
-/* ---------- The changing headline word ---------- */
+/* ---------- Changing words (snippets/bb-rotator.liquid) ---------- */
 
 const RIBBON =
   '<svg class="bb-rotator__ribbon" viewBox="0 0 200 12" preserveAspectRatio="none" focusable="false" xmlns="http://www.w3.org/2000/svg"><path pathLength="1" d="M2 8.2C34 3.4 62 10.6 101 6.6S168 3.2 198 7.4"/></svg>';
 
+// Keep in step with the .bb-rotator rules in bow-and-bloom.css.
+const LETTER_IN_STAGGER = 32; // ms between letters arriving
+const LETTER_OUT = 300; // ms for one letter to leave
+const LETTER_OUT_STAGGER = 14; // ms between letters leaving
+const READ_TIME = 1400; // ms a word rests, fully drawn, before it leaves
+
 /**
- * Builds a word the way the section renders the first one: one span per letter,
+ * Builds a word the way the snippet renders the first one: one span per letter,
  * the letter drawn by CSS from data-c, then the ribbon underline.
  * @param {string} text
  */
@@ -122,7 +128,6 @@ function buildWord(text) {
   word.className = 'bb-rotator__word';
   const letters = Array.from(text);
   word.style.setProperty('--n', String(letters.length));
-  word.style.setProperty('--bb-word-delay', '0.16s');
   letters.forEach((letter, index) => {
     const span = document.createElement('span');
     span.className = 'bb-rotator__char';
@@ -138,8 +143,12 @@ function buildWord(text) {
 const rotators = new WeakSet();
 
 /**
- * Swaps the last words of the headline in turn. It waits while the headline is
- * off screen, the tab is hidden or motion is paused.
+ * Swaps the last words of a headline in turn. The current word leaves letter by
+ * letter and the next starts arriving only as the old one's last letters fade,
+ * so the two never sit on top of each other. Each word stays long enough to
+ * arrive, draw its ribbon and be read; longer words stay a little longer.
+ * It waits while the words are off screen, the tab is hidden, motion is paused
+ * or the intro is playing, and starts the first time the words are seen.
  * @param {HTMLElement} element
  */
 function initRotator(element) {
@@ -155,51 +164,93 @@ function initRotator(element) {
   }
   if (words.length < 2 || reducedMotion.matches) return;
 
-  const interval = Math.max(2, Number(element.dataset.seconds) || 2.5) * 1000;
+  const minimum = Math.max(2, Number(element.dataset.seconds) || 2.5) * 1000;
+  /** @param {string} text */
+  const arrival = (text) => 300 + Array.from(text).length * LETTER_IN_STAGGER + 800;
+  /** @param {string} text */
+  const holdFor = (text) => Math.max(minimum, arrival(text) + READ_TIME);
+  /** @param {number} letters */
+  const exitFor = (letters) => LETTER_OUT + Math.max(0, letters - 1) * LETTER_OUT_STAGGER;
+
   let index = 0;
   let timer = 0;
-  let onScreen = true;
+  let onScreen = false;
+  let seen = false;
+  let waitingForIntro = root.classList.contains('bb-intro-playing');
 
-  const canRun = () => onScreen && !document.hidden && !motionPaused();
+  const canRun = () => onScreen && !waitingForIntro && !document.hidden && !motionPaused();
 
-  const step = () => {
+  /** @param {number} delay */
+  const schedule = (delay) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(step, delay);
+  };
+
+  const stop = () => {
+    window.clearTimeout(timer);
+    timer = 0;
+  };
+
+  function step() {
     timer = 0;
     if (!canRun()) return;
 
-    const current = element.querySelector('.bb-rotator__word:not(.is-out)');
+    // Anything still leaving from an earlier turn goes now.
+    for (const leaving of element.querySelectorAll('.bb-rotator__word.is-out')) leaving.remove();
+
+    const current = element.querySelector('.bb-rotator__word');
     index = (index + 1) % words.length;
-    const next = buildWord(words[index] ?? '');
+    const text = words[index] ?? '';
+
+    let exit = 0;
     if (current) {
+      exit = exitFor(current.querySelectorAll('.bb-rotator__char').length);
       current.classList.add('is-out');
-      window.setTimeout(() => current.remove(), 700);
+      window.setTimeout(() => current.remove(), exit + 80);
     }
-    element.append(next);
-    timer = window.setTimeout(step, interval);
+
+    // The new word's first letters are on the left, where the old word cleared first.
+    window.setTimeout(() => element.append(buildWord(text)), Math.max(0, exit - 110));
+    schedule(exit + holdFor(text));
+  }
+
+  // Coming back to the words (scrolled back, tab shown, motion resumed): a short pause first.
+  const resume = () => {
+    if (!timer && canRun()) schedule(1200);
   };
 
-  const resume = () => {
-    if (!timer && canRun()) timer = window.setTimeout(step, interval * 0.6);
-  };
+  const firstTurn = () => schedule(holdFor(words[0] ?? '') + 500);
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
       onScreen = Boolean(entry?.isIntersecting);
-      resume();
+      if (!onScreen) {
+        stop();
+      } else if (!seen) {
+        seen = true;
+        if (!waitingForIntro) firstTurn();
+      } else {
+        resume();
+      }
     }).observe(element);
-  }
-  document.addEventListener('visibilitychange', resume);
-  document.addEventListener('bb:motion', resume);
-
-  // The first word gets a full turn once the page (or the intro) has finished arriving.
-  const start = () => {
-    window.clearTimeout(timer);
-    timer = window.setTimeout(step, interval + 700);
-  };
-  if (root.classList.contains('bb-intro-playing')) {
-    timer = -1; // Held until the intro ends.
-    document.addEventListener('bb:intro-end', start, { once: true });
   } else {
-    requestAnimationFrame(start);
+    onScreen = true;
+    seen = true;
+    firstTurn();
+  }
+
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : resume()));
+  document.addEventListener('bb:motion', () => (motionPaused() ? stop() : resume()));
+
+  if (waitingForIntro) {
+    document.addEventListener(
+      'bb:intro-end',
+      () => {
+        waitingForIntro = false;
+        if (onScreen) firstTurn();
+      },
+      { once: true }
+    );
   }
 }
 
@@ -238,9 +289,10 @@ function initFloatingButton() {
 /* ---------- Scroll reveals ---------- */
 
 /**
- * kind: how it arrives. 'settle' uses the .bb-reveal transition; the others play
- * a one-off animation from bow-and-bloom.css.
- * @type {{ selector: string, kind: 'settle' | 'soft' | 'tag' | 'slide' | 'words' | 'unwrap' }[]}
+ * kind: how it arrives. 'settle' uses the .bb-reveal transition; 'group' marks a
+ * section whose own stylesheet plays its parts (sections/bb-statement.liquid); the
+ * others play a one-off animation from bow-and-bloom.css.
+ * @type {{ selector: string, kind: 'settle' | 'group' | 'soft' | 'tag' | 'slide' | 'words' | 'unwrap' }[]}
  */
 const REVEALS = [
   { selector: '.ribbon-divider', kind: 'settle' },
@@ -252,6 +304,7 @@ const REVEALS = [
   { selector: 'main[data-template="index"] :is(a.bb-cta, a.link)', kind: 'soft' },
   { selector: 'main[data-template="index"] .media-with-content .media-block', kind: 'unwrap' },
   { selector: 'main[data-template="index"] .accordion details', kind: 'slide' },
+  { selector: '.bb-statement', kind: 'group' },
 ];
 
 /** @type {IntersectionObserver | null} */
@@ -329,6 +382,8 @@ function armReveals(scope) {
 
       if (kind === 'settle') {
         element.classList.add('bb-reveal');
+      } else if (kind === 'group') {
+        element.classList.add('bb-armed');
       } else if (kind === 'words') {
         element.classList.add(splitWords(element) ? 'bb-reveal--words' : 'bb-reveal--soft');
       } else {

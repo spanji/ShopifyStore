@@ -6,8 +6,8 @@
       "settings": {
         "product": "birthday-pamper-hamper-for-her",
         "intro": true,
-        "heading_lead": "Birthday hampers she'll love",
-        "words": "",
+        "heading_lead": "Hampers for your",
+        "words": "best friend\ngirlfriend\nsister\nmum\ndaughter",
         "word_seconds": 2.5,
         "subline": "17 pamper treats, wrapped in pink and tied with a bow.",
         "button_label": "Shop the hamper",
@@ -15,8 +15,8 @@
         "button_link": "",
         "floating_button": true,
         "trust": "Free tracked UK delivery\nPacked by hand in Yorkshire\nFree gift message",
-        "image": "shopify://shop_images/bow-and-bloom-banner-v2.jpg",
-        "image_alt": "Pink roses wrapped in tissue and satin ribbon, with a Bow & Bloom gift tag and a card that reads Small gifts for big moments",
+        "image": "shopify://shop_images/IMG-7939.png",
+        "image_alt": "Pink birthday pamper hamper with face roller set, sweet jar, sleep mask, socks and satin ribbon",
         "show_badge": true,
         "badge_text": "17 treats • Free UK delivery • Packed by hand • ",
         "show_bows": true,
@@ -25,9 +25,9 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0,
-        "layout": "banner",
-        "image_ratio": "landscape",
-        "close_up_next": false,
+        "layout": "framed",
+        "image_ratio": "portrait",
+        "close_up_next": true,
         "close_up_focus": "30% 60%"
       }
     },
@@ -547,27 +547,12 @@
         "padding-block-start": 16,
         "padding-block-end": 64
       }
-    },
-    "statement": {
-      "type": "bb-statement",
-      "name": "Occasions",
-      "settings": {
-        "heading_lead": "Hampers for…",
-        "words": "birthdays\nget-well wishes\ncongratulations\nsaying thank you\njust because\nevery moment",
-        "word_seconds": 2.5,
-        "text": "17 pamper treats for whatever you're celebrating. Pick the occasion when you order and add a free gift message.",
-        "show_bows": true,
-        "color_scheme": "scheme-4",
-        "padding-block-start": 96,
-        "padding-block-end": 64
-      }
     }
   },
   "order": [
     "hero",
-    "statement",
-    "birthday_box",
     "marquee",
+    "birthday_box",
     "section_x8mrnx",
     "ribbon_faq",
     "faq"

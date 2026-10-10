@@ -684,7 +684,7 @@ product-custom-property-component .__heading::before {
 
 @keyframes bb-unwrap-image {
   from {
-    scale: 1.25;
+    scale: var(--bb-unwrap-scale, 1.25);
   }
 }
 
@@ -766,6 +766,163 @@ product-custom-property-component .__heading::before {
   background-color: rgb(var(--color-foreground-rgb) / 0.06);
   mask: var(--bb-pattern) 0 0 / var(--bb-pattern-size) repeat;
   pointer-events: none;
+}
+
+/* ---------- Changing words (snippets/bb-rotator.liquid) ----------
+ * Every word sits in the same grid cell, so a word leaving and a word arriving
+ * share one place without either jumping. The old word clears letter by letter
+ * before the new one starts (timed in bow-and-bloom.js), so they never overlap.
+ * Each letter's box is padded (and the padding cancelled by negative margins) so
+ * italic tails and descenders stay inside it while it animates; Safari otherwise
+ * clips them mid-animation. The size shrinks to fit the longest word, so nothing
+ * is ever cut off at the edge of a phone.
+ */
+
+.bb-rotator {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  padding-block-end: 0.18em;
+  font-size: min(var(--bb-word-scale, 1.1em), calc(100cqi / (var(--bb-longest, 10) * 0.5)));
+  font-style: italic;
+  line-height: 1.12;
+  white-space: nowrap;
+  color: var(--bb-word-colour, var(--color-primary));
+}
+
+.bb-rotator--center {
+  justify-items: center;
+}
+
+.bb-rotator__word {
+  position: relative;
+  grid-area: 1 / 1;
+}
+
+.bb-rotator__char {
+  display: inline-block;
+  padding: 0.14em 0.18em 0.3em;
+  margin: -0.14em -0.18em -0.3em;
+  white-space: pre;
+}
+
+.bb-rotator__char::before {
+  content: attr(data-c);
+}
+
+.bb-rotator__ribbon {
+  position: absolute;
+  inset-inline-start: -0.04em;
+  inset-block-end: -0.14em;
+  inline-size: calc(100% + 0.1em);
+  block-size: 0.24em;
+  overflow: visible;
+}
+
+.bb-rotator__ribbon path {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bb-rotator__char {
+    animation: bb-char-in 0.7s var(--bb-ease-out) both;
+    animation-delay: calc(var(--bb-word-delay, 0s) + var(--i, 0) * 32ms);
+  }
+
+  .bb-rotator__ribbon path {
+    animation: bb-ribbon-draw 0.8s var(--bb-ease-out) both;
+    animation-delay: calc(var(--bb-word-delay, 0s) + 0.3s + var(--n, 6) * 32ms);
+  }
+
+  .bb-rotator__word.is-out .bb-rotator__char {
+    animation: bb-char-out 0.3s cubic-bezier(0.55, 0, 0.75, 0.2) both;
+    animation-delay: calc(var(--i, 0) * 14ms);
+  }
+
+  .bb-rotator__word.is-out .bb-rotator__ribbon path {
+    animation: bb-ribbon-out 0.26s ease-in both;
+  }
+}
+
+@keyframes bb-char-in {
+  from {
+    opacity: 0;
+    translate: 0 0.42em;
+    filter: blur(5px);
+  }
+}
+
+@keyframes bb-char-out {
+  to {
+    opacity: 0;
+    translate: 0 -0.3em;
+    filter: blur(4px);
+  }
+}
+
+@keyframes bb-ribbon-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes bb-ribbon-out {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+@keyframes bb-rise {
+  from {
+    opacity: 0;
+    translate: 0 22px;
+  }
+}
+
+/* ---------- Floating bows (hero and statement) ---------- */
+
+.bb-float {
+  position: absolute;
+  z-index: 2;
+  inline-size: var(--size, 2rem);
+  aspect-ratio: 80 / 48;
+  background-color: var(--color-primary);
+  mask: var(--bb-bow) center / contain no-repeat;
+  opacity: var(--alpha, 0.5);
+  rotate: var(--r, 0deg);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bb-float {
+    animation:
+      bb-float-in 0.8s var(--bb-ease-tie) calc(var(--bb-float-delay, 0.6s) + var(--k, 0) * 0.12s) both,
+      bb-float 7s ease-in-out calc(var(--bb-float-delay, 0.6s) + 0.8s + var(--k, 0) * 0.9s) infinite alternate;
+  }
+}
+
+@keyframes bb-float-in {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+
+@keyframes bb-float {
+  from {
+    translate: 0 0;
+    rotate: calc(var(--r, 0deg) - 6deg);
+  }
+  to {
+    translate: 0 -12px;
+    rotate: calc(var(--r, 0deg) + 6deg);
+  }
 }
 
 /* ---------- The buy button (snippets/bb-cta.liquid) ----------
@@ -1458,7 +1615,7 @@ html.bb-intro-playing.bb-intro-skipping .bb-intro {
 /* The hero's pause button stops every loop on the page. */
 html.bb-motion-paused :is(
     .bb-badge__ring,
-    .bb-hero__float,
+    .bb-float,
     .marquee__wrapper,
     .ribbon-divider__bow,
     .product-information .add-to-cart-button

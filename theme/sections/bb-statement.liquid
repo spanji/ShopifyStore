@@ -1,0 +1,229 @@
+{% comment %}
+  Statement: one large centred line whose last words change ("Hampers for… birthdays /
+  get-well wishes / congratulations / …"), a bow above it and a short line below.
+  Made to sit straight after the hero and open the product section, sharing its
+  colour, so the occasions lead into the box itself.
+  When it starts below the fold, assets/bow-and-bloom.js marks it (.bb-armed) and it
+  plays as it scrolls into view (.is-revealed): the bow ties itself, the words rise,
+  the first changing word arrives letter by letter and its ribbon draws itself.
+  Without JavaScript, or with reduced motion, it shows still and complete.
+{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<div class="section-background color-{{ s.color_scheme }}"></div>
+<div
+  class="section bb-statement color-{{ s.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: s %}"
+>
+  {%- if s.show_bows -%}
+    {%- for i in (1..4) -%}
+      <span
+        class="bb-float bb-statement__float--{{ i }}"
+        aria-hidden="true"
+      ></span>
+    {%- endfor -%}
+  {%- endif -%}
+
+  <div class="bb-statement__inner">
+    <span
+      class="bb-statement__bow"
+      aria-hidden="true"
+    ></span>
+    <h2 class="bb-statement__title">
+      <span class="bb-statement__lead">{{ s.heading_lead | escape }}</span>
+      {%- if s.words != blank -%}
+        {% render 'bb-rotator', words: s.words, seconds: s.word_seconds, class: 'bb-rotator--center' %}
+      {%- endif -%}
+    </h2>
+    {%- if s.text != blank -%}
+      <p class="bb-statement__text">{{ s.text | escape }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .bb-statement {
+    position: relative;
+    overflow-x: clip;
+    text-align: center;
+  }
+
+  .bb-statement__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    inline-size: 100%;
+    max-inline-size: 58rem;
+    margin-inline: auto;
+  }
+
+  .bb-statement__bow {
+    display: block;
+    inline-size: clamp(2.3rem, 1.9rem + 1.4vw, 3.1rem);
+    aspect-ratio: 80 / 48;
+    margin-block-end: 1.1rem;
+    background-color: var(--color-primary);
+    mask: var(--bb-bow) center / contain no-repeat;
+    transform-origin: 50% 40%;
+  }
+
+  .bb-statement__title {
+    container-type: inline-size;
+    inline-size: 100%;
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(2.35rem, 1.5rem + 3.5vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--color-foreground-heading);
+  }
+
+  .bb-statement__lead {
+    display: block;
+  }
+
+  .bb-statement .bb-rotator {
+    --bb-word-scale: 1.16em;
+
+    margin-block-start: 0.04em;
+  }
+
+  .bb-statement__text {
+    max-inline-size: 38ch;
+    margin: 1.5rem auto 0;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.55;
+    text-wrap: balance;
+    color: rgb(var(--color-foreground-rgb) / 0.86);
+  }
+
+  /* A few bows drift in the empty space either side. */
+  .bb-statement__float--1 { --size: 2.4rem; --alpha: 0.4; --r: -14deg; inset-block-start: 24%; inset-inline-start: 8%; }
+  .bb-statement__float--2 { --size: 1.35rem; --alpha: 0.35; --r: 18deg; inset-block-start: 15%; inset-inline-end: 13%; --k: 1; }
+  .bb-statement__float--3 { --size: 2rem; --alpha: 0.3; --r: 10deg; inset-block-end: 20%; inset-inline-end: 7%; --k: 2; }
+  .bb-statement__float--4 { --size: 1.1rem; --alpha: 0.35; --r: 22deg; inset-block-end: 28%; inset-inline-start: 15%; --k: 3; }
+
+  @media screen and (max-width: 749px) {
+    .bb-statement__float--1 { --size: 1.6rem; inset-block-start: 1.5rem; inset-inline-start: 5%; }
+    .bb-statement__float--2 { --size: 1.1rem; inset-block-start: 2.6rem; inset-inline-end: 7%; }
+    .bb-statement__float--3,
+    .bb-statement__float--4 {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bb-statement .bb-rotator__word--first {
+      --bb-word-delay: 0.45s;
+    }
+
+    /* Waiting below the fold: hidden, and the first word holds its first frame. */
+    .bb-statement.bb-armed:not(.is-revealed) :is(.bb-statement__bow, .bb-statement__lead, .bb-statement__text) {
+      opacity: 0;
+    }
+
+    .bb-statement.bb-armed:not(.is-revealed) .bb-rotator__word--first :is(.bb-rotator__char, .bb-rotator__ribbon path) {
+      animation-play-state: paused;
+    }
+
+    .bb-statement.is-revealed .bb-statement__bow {
+      animation: bb-tie 0.9s var(--bb-ease-out) both;
+    }
+
+    .bb-statement.is-revealed .bb-statement__lead {
+      animation: bb-rise 0.9s var(--bb-ease-out) 0.12s backwards;
+    }
+
+    .bb-statement.is-revealed .bb-statement__text {
+      animation: bb-soft-in 0.95s var(--bb-ease-out) 0.85s backwards;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Statement (Bow & Bloom)",
+  "class": "section-wrapper",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_lead",
+      "label": "Start of the line",
+      "default": "Hampers for…"
+    },
+    {
+      "type": "textarea",
+      "id": "words",
+      "label": "Changing words",
+      "info": "One per line; each must finish the line as a sentence.",
+      "default": "birthdays\nget-well wishes\ncongratulations\nsaying thank you\njust because\nevery moment"
+    },
+    {
+      "type": "range",
+      "id": "word_seconds",
+      "label": "Seconds per word",
+      "info": "The least time each word stays. Longer words stay a little longer.",
+      "min": 2,
+      "max": 6,
+      "step": 0.5,
+      "unit": "s",
+      "default": 2.5
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Line underneath",
+      "default": "17 pamper treats for whatever you're celebrating. Pick the occasion when you order and add a free gift message."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bows",
+      "label": "Floating bows",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Statement (Bow & Bloom)"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,75 @@
+{%- doc -%}
+  Changing words at the end of a headline ("Hampers for… birthdays / congratulations / …").
+  Prints the whole list once, hidden, for screen readers and search engines, then the
+  moving word. Its letters are drawn by CSS from data-c, so the page text holds the
+  sentence once instead of the sentence plus the word. assets/bow-and-bloom.js swaps
+  the words; without it the first word simply stays. Styles live in bow-and-bloom.css.
+
+  @param {string} words - One word or phrase per line. Each must finish the sentence.
+  @param {number} [seconds] - The least time each word stays, in seconds.
+  @param {string} [class] - Extra classes, e.g. 'bb-rotator--center'.
+
+  @example
+  <h2>Hampers for… {% render 'bb-rotator', words: section.settings.words, seconds: 2.5 %}</h2>
+{%- enddoc -%}
+
+{%- liquid
+  assign raw_words = words | newline_to_br | split: '<br />'
+  assign word_list = ''
+  assign longest = 0
+  for raw_word in raw_words
+    assign clean_word = raw_word | strip | replace: '|', ''
+    if clean_word != blank
+      assign word_list = word_list | append: clean_word | append: '|'
+      if clean_word.size > longest
+        assign longest = clean_word.size
+      endif
+    endif
+  endfor
+  assign word_array = word_list | split: '|'
+-%}
+
+{%- if word_array.size > 0 -%}
+  {%- capture spoken -%}
+    {%- for word in word_array -%}
+      {%- if forloop.first -%}
+        {{- word -}}
+      {%- elsif forloop.last -%}
+        {{- ' or ' | append: word -}}
+      {%- else -%}
+        {{- ', ' | append: word -}}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- assign chars = word_array.first | split: '' -%}
+  <span class="visually-hidden"> {{ spoken | escape }}</span>
+  <span
+    class="bb-rotator {{ class }}"
+    aria-hidden="true"
+    data-words="{{ word_array | json | escape }}"
+    data-seconds="{{ seconds | default: 2.5 }}"
+    style="--bb-longest: {{ longest }};"
+  >
+    <span
+      class="bb-rotator__word bb-rotator__word--first"
+      style="--n: {{ chars.size }};"
+    >
+      {%- for char in chars -%}
+        <span
+          class="bb-rotator__char"
+          data-c="{{ char | escape }}"
+          style="--i: {{ forloop.index0 }};"
+        ></span>
+      {%- endfor -%}
+      <svg
+        class="bb-rotator__ribbon"
+        viewBox="0 0 200 12"
+        preserveAspectRatio="none"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path pathLength="1" d="M2 8.2C34 3.4 62 10.6 101 6.6S168 3.2 198 7.4" />
+      </svg>
+    </span>
+  </span>
+{%- endif -%}
