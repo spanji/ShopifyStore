@@ -144,8 +144,8 @@ const rotators = new WeakSet();
 
 /**
  * Swaps the last words of a headline in turn. The current word leaves letter by
- * letter and the next starts arriving only as the old one's last letters fade,
- * so the two never sit on top of each other. Each word stays long enough to
+ * letter and the next starts arriving once the old one has gone, so the two never
+ * sit on top of each other. Each word stays long enough to
  * arrive, draw its ribbon and be read; longer words stay a little longer.
  * It waits while the words are off screen, the tab is hidden, motion is paused
  * or the intro is playing, and starts the first time the words are seen.
@@ -206,11 +206,12 @@ function initRotator(element) {
     if (current) {
       exit = exitFor(current.querySelectorAll('.bb-rotator__char').length);
       current.classList.add('is-out');
-      window.setTimeout(() => current.remove(), exit + 80);
+      window.setTimeout(() => current.remove(), exit + 40);
     }
 
-    // The new word's first letters are on the left, where the old word cleared first.
-    window.setTimeout(() => element.append(buildWord(text)), Math.max(0, exit - 110));
+    // The new word starts only once every letter of the old one has gone, so short
+    // words (where any letter can sit where the old word was) never overlap either.
+    window.setTimeout(() => element.append(buildWord(text)), exit);
     schedule(exit + holdFor(text));
   }
 
