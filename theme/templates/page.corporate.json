@@ -91,14 +91,18 @@
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-inline-end": 0,
+            "enquiry_type": "Corporate & bulk enquiry",
+            "show_bulk_fields": true,
+            "boxes_label": "How many boxes?",
+            "date_label": "When do you need them?"
           },
           "blocks": {
             "submit-button": {
               "type": "contact-form-submit-button",
               "static": true,
               "settings": {
-                "label": "Send message",
+                "label": "Send enquiry",
                 "style_class": "button",
                 "width": "fit-content",
                 "custom_width": 100,

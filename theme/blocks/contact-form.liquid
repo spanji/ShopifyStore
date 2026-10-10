@@ -23,6 +23,14 @@
       type="hidden"
       value="{{ form_id }}"
     >
+    {% # Bow and Bloom: optional label so the email says which form it came from. %}
+    {%- if block.settings.enquiry_type != blank -%}
+      <input
+        name="contact[Enquiry]"
+        type="hidden"
+        value="{{ block.settings.enquiry_type | escape }}"
+      >
+    {%- endif -%}
 
     {%- if form.errors and form.id == form_id -%}
       <div
@@ -107,6 +115,40 @@
       placeholder="{{ 'blocks.contact_form.phone' | t }}"
     >
 
+    {% # Bow and Bloom: optional questions for bulk and corporate orders. %}
+    {%- if block.settings.show_bulk_fields -%}
+      <div class="contact-form__form-row">
+        <label
+          class="visually-hidden"
+          for="ContactForm-boxes"
+        >
+          {{- block.settings.boxes_label | escape -}}
+        </label>
+        <input
+          type="text"
+          id="ContactForm-boxes"
+          class="contact-form__input"
+          name="contact[{{ block.settings.boxes_label | escape }}]"
+          inputmode="numeric"
+          placeholder="{{ block.settings.boxes_label | escape }}"
+        >
+
+        <label
+          class="visually-hidden"
+          for="ContactForm-needed-by"
+        >
+          {{- block.settings.date_label | escape -}}
+        </label>
+        <input
+          type="text"
+          id="ContactForm-needed-by"
+          class="contact-form__input"
+          name="contact[{{ block.settings.date_label | escape }}]"
+          placeholder="{{ block.settings.date_label | escape }}"
+        >
+      </div>
+    {%- endif -%}
+
     <label
       class="visually-hidden"
       for="ContactForm-body"
@@ -175,6 +217,32 @@
   "name": "t:names.contact_form",
   "tag": null,
   "settings": [
+    {
+      "type": "text",
+      "id": "enquiry_type",
+      "label": "Enquiry type",
+      "info": "Optional. Shown at the top of the email, so you know which form it came from."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bulk_fields",
+      "label": "Ask bulk order questions",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "boxes_label",
+      "label": "Quantity question",
+      "default": "How many boxes?",
+      "visible_if": "{{ block.settings.show_bulk_fields }}"
+    },
+    {
+      "type": "text",
+      "id": "date_label",
+      "label": "Date question",
+      "default": "When do you need them?",
+      "visible_if": "{{ block.settings.show_bulk_fields }}"
+    },
     {
       "type": "select",
       "id": "width",
