@@ -512,6 +512,12 @@
       padding-block: 3rem;
       padding-inline: var(--util-page-margin-offset, 40px) clamp(2rem, 4vw, 4.5rem);
     }
+
+    /* The narrower column reads better with the trust points stacked, as in v3. */
+    .bb-hero--banner .bb-hero__trust {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
 
   /* ---------- Price badge ---------- */
@@ -633,8 +639,18 @@
       display: none;
     }
 
+    /* Phones: two small bows in the corner above the headline, clear of the words. */
+    .bb-hero--banner .bb-hero__float--1 {
+      inset: 1rem 5% auto auto;
+      --size: 1.8rem;
+    }
+
     .bb-hero--banner .bb-hero__float--2 {
-      inset: 5.2rem 4% auto auto;
+      display: none;
+    }
+
+    .bb-hero--banner .bb-hero__float--4 {
+      inset: 2.6rem 22% auto auto;
     }
   }
 

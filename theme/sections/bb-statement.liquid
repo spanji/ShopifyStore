@@ -41,6 +41,14 @@
     {%- if s.text != blank -%}
       <p class="bb-statement__text">{{ s.text | escape }}</p>
     {%- endif -%}
+    {%- if s.link_label != blank and s.link != blank -%}
+      <a
+        href="{{ s.link }}"
+        class="link bb-statement__link"
+      >
+        {{- s.link_label | escape -}}
+      </a>
+    {%- endif -%}
   </div>
 </div>
 
@@ -94,12 +102,35 @@
   }
 
   .bb-statement__text {
-    max-inline-size: 38ch;
+    max-inline-size: min(100%, 46ch);
     margin: 1.5rem auto 0;
     font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
     line-height: 1.55;
     text-wrap: balance;
     color: rgb(var(--color-foreground-rgb) / 0.86);
+  }
+
+  .bb-statement__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-block-start: 1.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .bb-statement__link::after {
+    content: '';
+    inline-size: 1rem;
+    block-size: 1rem;
+    background-color: currentcolor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 10h11.5M10.8 5.2 15.6 10l-4.8 4.8'/%3E%3C/svg%3E") center / contain no-repeat;
+    transition: translate 0.3s var(--bb-ease-out);
+  }
+
+  .bb-statement__link:hover::after {
+    translate: 3px 0;
   }
 
   /* A few bows drift in the empty space either side. */
@@ -123,7 +154,7 @@
     }
 
     /* Waiting below the fold: hidden, and the first word holds its first frame. */
-    .bb-statement.bb-armed:not(.is-revealed) :is(.bb-statement__bow, .bb-statement__lead, .bb-statement__text) {
+    .bb-statement.bb-armed:not(.is-revealed) :is(.bb-statement__bow, .bb-statement__lead, .bb-statement__text, .bb-statement__link) {
       opacity: 0;
     }
 
@@ -141,6 +172,10 @@
 
     .bb-statement.is-revealed .bb-statement__text {
       animation: bb-soft-in 0.95s var(--bb-ease-out) 0.85s backwards;
+    }
+
+    .bb-statement.is-revealed .bb-statement__link {
+      animation: bb-soft-in 0.95s var(--bb-ease-out) 1.05s backwards;
     }
   }
 {% endstylesheet %}
@@ -182,6 +217,17 @@
       "id": "text",
       "label": "Line underneath",
       "default": "17 pamper treats for whatever you're celebrating. Pick the occasion when you order and add a free gift message."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Choose your occasion"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
     },
     {
       "type": "checkbox",
