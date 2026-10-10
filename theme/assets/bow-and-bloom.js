@@ -10,6 +10,8 @@
  *   the fold is touched, so nothing on screen ever blinks out.
  * - Opens and closes questions (<details class="bb-faq">) smoothly.
  * - Occasion choice on the product page (blocks/bb-occasion.liquid).
+ * - Personalised note on the product page (blocks/bb-gift-note.liquid): adds the
+ *   note product, with its message, to the basket along with the product.
  *
  * Everything stays readable and usable without this script, and nothing moves
  * when the visitor prefers reduced motion.
@@ -475,6 +477,139 @@ function enhanceOccasions(scope) {
   }
 }
 
+/* ---------- Personalised note (blocks/bb-gift-note.liquid) ---------- */
+
+/**
+ * The tick box opens the message box (and makes it required) and hides express
+ * checkout, which would skip the basket and leave the note behind.
+ * @param {ParentNode} scope
+ */
+function enhanceNotes(scope) {
+  for (const note of scope.querySelectorAll('[data-bb-note]')) {
+    if (!(note instanceof HTMLElement) || note.dataset.bbReady) continue;
+    const check = note.querySelector('.bb-note__check');
+    const message = note.querySelector('.bb-note__message');
+    const count = note.querySelector('.bb-note__count');
+    if (!(check instanceof HTMLInputElement) || !(message instanceof HTMLTextAreaElement)) continue;
+    note.dataset.bbReady = 'true';
+
+    const sync = () => {
+      message.disabled = !check.checked;
+      const form = document.getElementById(note.dataset.formId || '');
+      form?.closest('product-form-component')?.toggleAttribute('data-bb-note-on', check.checked);
+      if (!check.checked) note.querySelector('.bb-note__error')?.setAttribute('hidden', '');
+    };
+    check.addEventListener('change', () => {
+      sync();
+      if (check.checked) message.focus({ preventScroll: true });
+    });
+    message.addEventListener('input', () => {
+      if (count) count.textContent = `${message.value.length}/${count.dataset.max}`;
+    });
+    sync();
+  }
+}
+
+/**
+ * Puts the note in the basket, with its message, just before the product form
+ * sends the product, so the basket opens showing both. Listens on window, ahead of
+ * the theme's own submit handling on document, then lets the form carry on.
+ */
+window.addEventListener(
+  'submit',
+  (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || !form.id || form.dataset.bbNotePassing) return;
+    const note = document.querySelector(`[data-bb-note][data-form-id="${CSS.escape(form.id)}"]`);
+    const check = note?.querySelector('.bb-note__check');
+    if (!(note instanceof HTMLElement) || !(check instanceof HTMLInputElement) || !check.checked) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    addNoteThenSubmit(note, form, event.submitter);
+  },
+  true
+);
+
+/**
+ * @param {HTMLElement} note
+ * @param {HTMLFormElement} form
+ * @param {HTMLElement | null} submitter
+ */
+async function addNoteThenSubmit(note, form, submitter) {
+  if (note.dataset.bbBusy) return;
+  note.dataset.bbBusy = 'true';
+  const message = /** @type {HTMLTextAreaElement | null} */ (note.querySelector('.bb-note__message'));
+  const error = note.querySelector('.bb-note__error');
+  error?.setAttribute('hidden', '');
+
+  try {
+    const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart/add.js`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        items: [
+          {
+            id: Number(note.dataset.variantId),
+            quantity: 1,
+            properties: { [note.dataset.property || 'Message']: (message?.value || '').trim() },
+          },
+        ],
+      }),
+    });
+    const result = await response.json();
+    if (!response.ok || result.status) throw new Error(result.description || result.message);
+    takeBackIfProductFails(form, result.items?.[0]?.key);
+
+    form.dataset.bbNotePassing = 'true';
+    try {
+      form.requestSubmit(submitter instanceof HTMLButtonElement && submitter.form === form ? submitter : undefined);
+    } finally {
+      delete form.dataset.bbNotePassing;
+    }
+  } catch {
+    if (error) {
+      error.textContent = note.dataset.error || '';
+      error.removeAttribute('hidden');
+    }
+  } finally {
+    delete note.dataset.bbBusy;
+  }
+}
+
+/**
+ * If the product itself then can't be added (sold out, say), the note comes back
+ * out of the basket, so nobody pays for a note with nothing to go with it.
+ * @param {HTMLFormElement} form
+ * @param {string | undefined} key
+ */
+function takeBackIfProductFails(form, key) {
+  const component = form.closest('product-form-component');
+  if (!key || !component) return;
+
+  /** @param {Event} event */
+  const onResult = (event) => {
+    if (!(event.target instanceof Node) || !component.contains(event.target)) return;
+    stop();
+    const detail = /** @type {CustomEvent} */ (event).detail;
+    if (event.type === 'cart:error' || detail?.data?.didError) {
+      fetch(`${window.Shopify?.routes?.root || '/'}cart/change.js`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: key, quantity: 0 }),
+      }).catch(() => {});
+    }
+  };
+  const stop = () => {
+    document.removeEventListener('cart:update', onResult);
+    document.removeEventListener('cart:error', onResult);
+    clearTimeout(timer);
+  };
+  const timer = setTimeout(stop, 20000);
+  document.addEventListener('cart:update', onResult);
+  document.addEventListener('cart:error', onResult);
+}
+
 /**
  * @param {ParentNode} scope
  */
@@ -486,6 +621,7 @@ function init(scope) {
     initRotator(/** @type {HTMLElement} */ (rotator));
   }
   enhanceOccasions(scope);
+  enhanceNotes(scope);
   syncPauseButtons();
   initFloatingButton();
   armReveals(scope);

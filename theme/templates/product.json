@@ -289,20 +289,19 @@
               "blocks": {},
               "name": "Product description"
             },
-            "gift_message": {
-              "type": "product-custom-property",
+            "gift_note": {
+              "type": "bb-gift-note",
               "settings": {
-                "property_heading": "Add a free gift message",
-                "property_description": "We'll write it on a card and tuck it in the box.",
-                "property_key": "Gift message",
-                "input_type": "text",
+                "product": "personalised-note",
+                "label": "Add a personalised note",
+                "about": "We'll write your message on a card and tuck it in the box.",
+                "message_label": "Your message",
+                "placeholder": "Happy birthday! Love from…",
                 "max_length": 150,
-                "required": false,
-                "placeholder_textarea": "Happy birthday! Love from…",
+                "property_key": "Message",
+                "error_text": "Sorry, we couldn't add your note. Please try again.",
                 "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-block-end": 0
               },
               "blocks": {}
             },
@@ -325,7 +324,7 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "occasion",
-            "gift_message",
+            "gift_note",
             "buy_buttons_eYQEYi",
             "text_aEtTtq"
           ]
@@ -708,7 +707,7 @@
                 "faq_3_text": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Yes, for free. Type it in the gift message box on the product page and we'll write it on a card and tuck it in the box.</p>",
+                    "text": "<p>Yes, for 50p. Tick \"Add a personalised note\" on the product page, type your message and we'll write it on a card and tuck it in the box.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

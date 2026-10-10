@@ -1,0 +1,344 @@
+{%- doc -%}
+  Personalised note add-on for a product page: a tick box with the note's price.
+  Ticking it opens a short line about the note and a box for the message. When the
+  product goes in the basket, assets/bow-and-bloom.js adds the note product just
+  before it, with the message saved on the note's line, so the basket opens with
+  both. Express checkout buttons hide while it is ticked, because they skip the
+  basket and would leave the note behind. Unticked, nothing extra is added.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign note_product = block_settings.product
+  assign note_variant = note_product.selected_or_first_available_variant
+  assign product_form_id = 'BuyButtons-ProductForm-' | append: section.id
+  assign property_key = block_settings.property_key | default: 'Message'
+  assign panel_id = 'BbNotePanel-' | append: block.id
+  assign message_id = 'BbNoteMessage-' | append: block.id
+  assign about_id = 'BbNoteAbout-' | append: block.id
+  assign count_id = 'BbNoteCount-' | append: block.id
+
+  if note_variant.price < 100
+    assign note_price = note_variant.price | append: 'p'
+  else
+    assign note_price = note_variant.price | money_without_trailing_zeros
+  endif
+-%}
+
+{%- if note_variant != blank and note_variant.available -%}
+  <div
+    class="bb-note spacing-style"
+    style="{% render 'spacing-style', settings: block_settings %}"
+    data-bb-note
+    data-form-id="{{ product_form_id }}"
+    data-variant-id="{{ note_variant.id }}"
+    data-property="{{ property_key | escape }}"
+    data-error="{{ block_settings.error_text | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    <label class="bb-note__toggle">
+      <input
+        type="checkbox"
+        class="bb-note__check"
+        aria-controls="{{ panel_id }}"
+      >
+      <span class="bb-note__label">{{ block_settings.label | escape }}</span>
+      <span class="bb-note__price">+{{ note_price }}</span>
+    </label>
+
+    <div
+      class="bb-note__panel"
+      id="{{ panel_id }}"
+    >
+      {%- if block_settings.about != blank -%}
+        <p
+          class="bb-note__about"
+          id="{{ about_id }}"
+        >
+          {{ block_settings.about | escape }}
+        </p>
+      {%- endif -%}
+      <label
+        class="bb-note__message-label"
+        for="{{ message_id }}"
+      >
+        {{- block_settings.message_label | escape -}}
+      </label>
+      <div class="bb-note__field">
+        <textarea
+          id="{{ message_id }}"
+          class="field__input custom-property__input bb-note__message"
+          form="{{ product_form_id }}"
+          rows="3"
+          maxlength="{{ block_settings.max_length }}"
+          placeholder="{{ block_settings.placeholder | escape }}"
+          aria-describedby="{% if block_settings.about != blank %}{{ about_id }} {% endif %}{{ count_id }}"
+          required
+          disabled
+        ></textarea>
+        <span
+          class="bb-note__count"
+          id="{{ count_id }}"
+          data-max="{{ block_settings.max_length }}"
+        >
+          0/{{ block_settings.max_length }}
+        </span>
+      </div>
+      <p
+        class="bb-note__error"
+        role="alert"
+        hidden
+      ></p>
+    </div>
+  </div>
+{%- elsif request.design_mode -%}
+  <p
+    class="bb-note__setup"
+    {{ block.shopify_attributes }}
+  >
+    Choose the note product in this block's settings to show the personalised note.
+  </p>
+{%- endif -%}
+
+{% stylesheet %}
+  .bb-note__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+    border-radius: 14px;
+    background-color: rgb(var(--color-foreground-rgb) / 0.02);
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .bb-note__toggle:hover {
+    border-color: rgb(var(--color-primary-rgb) / 0.55);
+  }
+
+  .bb-note:has(.bb-note__check:checked) .bb-note__toggle {
+    border-color: var(--color-primary);
+    background-color: rgb(var(--color-primary-rgb) / 0.07);
+  }
+
+  .bb-note__check {
+    appearance: none;
+    flex: none;
+    display: grid;
+    place-items: center;
+    inline-size: 1.375rem;
+    block-size: 1.375rem;
+    margin: 0;
+    border: 1.5px solid rgb(var(--color-foreground-rgb) / 0.5);
+    border-radius: 6px;
+    background-color: var(--color-background);
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  .bb-note__check::after {
+    content: '';
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+    background-color: var(--color-background);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.4 6.4 11.6 13 4.6'/%3E%3C/svg%3E") center / contain no-repeat;
+    scale: 0;
+    transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .bb-note__check:checked {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+  }
+
+  .bb-note__check:checked::after {
+    scale: 1;
+  }
+
+  .bb-note__check:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  .bb-note__label {
+    flex: 1;
+    font-weight: 600;
+  }
+
+  .bb-note__price {
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--color-primary);
+  }
+
+  /* What the note is and the message box open only once it's ticked. */
+  .bb-note__panel {
+    display: none;
+    padding: 0.9rem 0.15rem 0;
+  }
+
+  .bb-note:has(.bb-note__check:checked) .bb-note__panel {
+    display: block;
+  }
+
+  .bb-note__about {
+    margin: 0 0 0.85rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: rgb(var(--color-foreground-rgb) / 0.78);
+  }
+
+  .bb-note__message-label {
+    display: block;
+    margin-block-end: 0.4rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .bb-note__field {
+    position: relative;
+  }
+
+  .bb-note__message {
+    inline-size: 100%;
+    min-block-size: 6.5rem;
+    padding-block-end: 2rem;
+    resize: vertical;
+    color: var(--color-input-text);
+  }
+
+  .bb-note__count {
+    position: absolute;
+    inset-block-end: 0.6rem;
+    inset-inline-end: 0.85rem;
+    font-size: 0.8125rem;
+    color: rgb(var(--color-foreground-rgb) / 0.62);
+    pointer-events: none;
+  }
+
+  .bb-note__error {
+    margin: 0.6rem 0 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .bb-note__setup {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  /* Express checkout skips the basket, so it would leave the note behind. */
+  product-form-component[data-bb-note-on] [ref='acceleratedCheckoutButtonContainer'] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bb-note:has(.bb-note__check:checked) .bb-note__panel {
+      animation: bb-note-open 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  @keyframes bb-note-open {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Personalised note",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "A tick box that adds the note product to the basket, with the buyer's message saved on its line. Express checkout buttons hide while it's ticked."
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Note product",
+      "info": "A hidden product at the note's price. The price shown here comes from it."
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Tick box label",
+      "default": "Add a personalised note"
+    },
+    {
+      "type": "text",
+      "id": "about",
+      "label": "Shown once ticked",
+      "default": "We'll write your message on a card and tuck it in the box."
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message box heading",
+      "default": "Your message"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Example text",
+      "default": "Happy birthday! Love from…"
+    },
+    {
+      "type": "range",
+      "id": "max_length",
+      "label": "Character limit",
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "default": 150
+    },
+    {
+      "type": "text",
+      "id": "property_key",
+      "label": "Name on the order",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "If the note can't be added",
+      "default": "Sorry, we couldn't add your note. Please try again."
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Personalised note",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

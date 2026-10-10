@@ -14,7 +14,7 @@
         "show_price": true,
         "button_link": "",
         "floating_button": true,
-        "trust": "Free tracked UK delivery\nPacked by hand in Yorkshire\nFree gift message",
+        "trust": "Free tracked UK delivery\nPacked by hand in Yorkshire\nPersonalised note for 50p",
         "image": "shopify://shop_images/IMG-7939.png",
         "image_alt": "Pink birthday pamper hamper with face roller set, sweet jar, sleep mask, socks and satin ribbon",
         "show_badge": true,
@@ -426,7 +426,7 @@
                 "faq_3_text": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Yes, for free. Type it in the gift message box on the product page and we'll write it on a card and tuck it in the box.</p>",
+                    "text": "<p>Yes, for 50p. Tick \"Add a personalised note\" on the product page, type your message and we'll write it on a card and tuck it in the box.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

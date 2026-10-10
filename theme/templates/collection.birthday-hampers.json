@@ -235,7 +235,7 @@
         "faq_heading": {
           "type": "text",
           "settings": {
-            "text": "<h2>Birthday hampers for her, packed by hand</h2><p>Every Bow &amp; Bloom hamper is packed by hand in Yorkshire, wrapped in pink tissue and tied with a satin bow. Inside there's a pamper night, cosy extras and something sweet, so it suits a best friend, a sister, a partner or your mum.</p><p>Delivery is free and tracked on every UK order, and the gift message is free too.</p>",
+            "text": "<h2>Birthday hampers for her, packed by hand</h2><p>Every Bow &amp; Bloom hamper is packed by hand in Yorkshire, wrapped in pink tissue and tied with a satin bow. Inside there's a pamper night, cosy extras and something sweet, so it suits a best friend, a sister, a partner or your mum.</p><p>Delivery is free and tracked on every UK order, and you can add a personalised note for 50p.</p>",
             "width": "100%",
             "max_width": "normal",
             "alignment": "left",
@@ -365,7 +365,7 @@
                 "faq_3_text": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>Yes, for free. Type it in the gift message box on the product page and we'll write it on a card and tuck it in the box.</p>",
+                    "text": "<p>Yes, for 50p. Tick \"Add a personalised note\" on the product page, type your message and we'll write it on a card and tuck it in the box.</p>",
                     "width": "100%",
                     "max_width": "normal",
                     "alignment": "left",

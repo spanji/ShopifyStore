@@ -119,6 +119,17 @@
   href="{{ canonical_url }}"
 >
 
+{%- comment -%}
+  Bow and Bloom: product tags (occasion:birthday, recipient:her…) build collections;
+  a page filtered by a tag repeats its collection, so search engines skip it.
+{%- endcomment -%}
+{%- if current_tags -%}
+  <meta
+    name="robots"
+    content="noindex, follow"
+  >
+{%- endif -%}
+
 {% if page_description %}
   <meta
     name="description"
