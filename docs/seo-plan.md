@@ -26,6 +26,10 @@ Nobody can promise a ranking or a date. Nothing below will show results within t
     - FAQ questions as structured data
     - copy and four questions below the birthday hampers grid, through a new `collection.birthday-hampers` template the collection now uses
   - The live v2 theme falls back to the normal collection layout until v3 is published.
+- **10 Oct 2026, later:**
+  - Product category set to Bath & Body Gift Sets, and its Google fields filled (Pink, Female, Adults, Gift box, Special occasion).
+  - The two variants are merged into one shared stock count of 17. The Birthday or Other celebration choice is now an order note, built into v3.
+  - Until v3 is published, the live v2 product page shows no occasion choice. The store is locked, so no buyer sees this.
 - **Waiting on the owner:** shop settings (1.1), policies, photos (1.4), domain (1.5), publishing v3.
 
 ## Decisions (owner, 10 Oct 2026)
