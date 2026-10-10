@@ -1022,7 +1022,7 @@ html.bb-intro-pending body::after {
   display: none;
 }
 
-html.bb-intro .bb-intro {
+html.bb-intro-playing .bb-intro {
   --bw: min(64vw, 320px);
   --bb-ribbon: calc(var(--bw) * 0.065);
 
@@ -1035,13 +1035,13 @@ html.bb-intro .bb-intro {
   animation: bb-hide 0s linear 2.1s forwards;
 }
 
-html.bb-intro.bb-intro-skip .bb-intro {
+html.bb-intro-playing.bb-intro-skipping .bb-intro {
   animation: bb-intro-fade 0.3s ease forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html.bb-intro-pending body::after,
-  html.bb-intro .bb-intro {
+  html.bb-intro-playing .bb-intro {
     display: none;
   }
 }

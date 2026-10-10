@@ -76,7 +76,7 @@ document.addEventListener('click', (event) => {
  */
 function initIntro() {
   root.classList.remove('bb-intro-pending');
-  if (!root.classList.contains('bb-intro')) return;
+  if (!root.classList.contains('bb-intro-playing')) return;
 
   const events = ['pointerdown', 'keydown', 'wheel', 'touchstart'];
   let done = false;
@@ -84,14 +84,14 @@ function initIntro() {
   const finish = () => {
     if (done) return;
     done = true;
-    root.classList.remove('bb-intro', 'bb-intro-skip');
+    root.classList.remove('bb-intro-playing', 'bb-intro-skipping');
     for (const type of events) window.removeEventListener(type, skip);
     document.dispatchEvent(new CustomEvent('bb:intro-end'));
   };
 
   const skip = () => {
     if (done) return;
-    root.classList.add('bb-intro-skip');
+    root.classList.add('bb-intro-skipping');
     for (const hero of document.querySelectorAll('.bb-hero[data-intro="on"]')) {
       /** @type {HTMLElement} */ (hero).dataset.intro = 'skipped';
     }
@@ -195,7 +195,7 @@ function initRotator(element) {
     window.clearTimeout(timer);
     timer = window.setTimeout(step, interval + 700);
   };
-  if (root.classList.contains('bb-intro')) {
+  if (root.classList.contains('bb-intro-playing')) {
     timer = -1; // Held until the intro ends.
     document.addEventListener('bb:intro-end', start, { once: true });
   } else {
