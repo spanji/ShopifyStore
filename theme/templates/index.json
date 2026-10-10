@@ -25,7 +25,7 @@
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0,
-        "layout": "banner",
+        "layout": "fullscreen",
         "image_ratio": "landscape",
         "close_up_next": false,
         "close_up_focus": "30% 60%"
@@ -558,8 +558,8 @@
         "text": "17 pamper treats for whatever you're celebrating. Pick the occasion when you order and add a free gift message.",
         "show_bows": true,
         "color_scheme": "scheme-4",
-        "padding-block-start": 96,
-        "padding-block-end": 64,
+        "padding-block-start": 56,
+        "padding-block-end": 40,
         "link_label": "Choose your occasion",
         "link": "shopify://products/birthday-pamper-hamper-for-her"
       }

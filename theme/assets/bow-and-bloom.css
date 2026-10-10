@@ -1382,6 +1382,7 @@ html.bb-intro-playing.bb-intro-skipping .bb-intro {
   to {
     translate: calc(-50% + var(--bb-fly-x, 0px)) calc(-36.46% + var(--bb-fly-y, -40vh));
     scale: var(--bb-fly-scale, 0.2);
+    opacity: var(--bb-fly-opacity, 1);
   }
 }
 

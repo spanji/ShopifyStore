@@ -38,7 +38,10 @@
 
   assign image_alt = s.image.alt | default: s.image_alt
 
-  if layout == 'banner'
+  if layout == 'fullscreen'
+    assign image_sizes = '100vw'
+    assign image_widths = '480, 720, 960, 1200, 1600'
+  elsif layout == 'banner'
     assign image_sizes = '(min-width: 750px) 58vw, 100vw'
     assign image_widths = '480, 720, 960, 1200, 1500'
   elsif s.image_ratio == 'landscape'
@@ -71,7 +74,7 @@
 >
   <div class="bb-hero__inner">
     <div class="bb-hero__text">
-      {%- if layout == 'banner' -%}
+      {%- if layout != 'framed' -%}
         {{ floating_bows }}
       {%- endif -%}
       <span
@@ -195,7 +198,7 @@
         </div>
       {%- endif -%}
 
-      {%- if layout != 'banner' -%}
+      {%- if layout == 'framed' -%}
         {{ floating_bows }}
       {%- endif -%}
 
@@ -268,15 +271,23 @@
       hero.setAttribute('data-intro', 'on');
       root.classList.add('bb-intro-playing');
 
-      var target = hero.querySelector('.bb-hero__bow');
       var width = Math.min(window.innerWidth * 0.64, 320);
       var centreX = window.innerWidth / 2;
       var centreY = window.innerHeight / 2 + width * 0.081;
-      if (target && window.scrollY === 0) {
-        var box = target.getBoundingClientRect();
+      var target = hero.querySelector('.bb-hero__bow');
+      var box = target && target.getBoundingClientRect();
+      var scale = box ? box.width / width : 0;
+      // The headline can sit below a full-screen photo; then the bow goes into the logo.
+      if (!box || box.bottom > window.innerHeight) {
+        target = document.querySelector('.header-logo__image, .header-logo');
+        box = target && target.getBoundingClientRect();
+        scale = box ? Math.min(box.height * 1.6, box.width) / width : 0;
+        root.style.setProperty('--bb-fly-opacity', '0');
+      }
+      if (box && window.scrollY === 0) {
         root.style.setProperty('--bb-fly-x', box.left + box.width / 2 - centreX + 'px');
         root.style.setProperty('--bb-fly-y', box.top + box.height / 2 - centreY + 'px');
-        root.style.setProperty('--bb-fly-scale', String(box.width / width));
+        root.style.setProperty('--bb-fly-scale', String(scale));
       }
     })();
   </script>
@@ -520,6 +531,57 @@
     }
   }
 
+  /* ---------- Full screen (v1): the photo fills the width, the words sit centred below ---------- */
+
+  .bb-hero--fullscreen .bb-hero__inner {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-block-size: 0;
+    padding-block: 0;
+  }
+
+  .bb-hero--fullscreen .bb-hero__media {
+    order: -1;
+    margin: 0;
+  }
+
+  .bb-hero--fullscreen .bb-hero__frame {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .bb-hero--fullscreen .bb-hero__text {
+    display: grid;
+    justify-items: center;
+    justify-self: center;
+    inline-size: min(100%, 66rem);
+    padding: 2.4rem var(--page-margin) 2.75rem;
+    text-align: center;
+  }
+
+  .bb-hero--fullscreen .bb-hero__sub {
+    max-inline-size: 42ch;
+    margin-inline: auto;
+  }
+
+  .bb-hero--fullscreen .bb-hero__trust {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-hero--fullscreen .bb-hero__text {
+      padding-block: 3rem 3.25rem;
+    }
+
+    .bb-hero--fullscreen .bb-hero__trust {
+      flex-direction: row;
+      justify-content: center;
+      gap: 0.55rem 1.75rem;
+    }
+  }
+
   /* ---------- Price badge ---------- */
 
   .bb-badge {
@@ -539,7 +601,8 @@
       0 16px 30px -18px rgb(var(--color-shadow-rgb) / 0.6);
   }
 
-  .bb-hero--banner .bb-badge {
+  .bb-hero--banner .bb-badge,
+  .bb-hero--fullscreen .bb-badge {
     inset-block-end: 0.9rem;
     inline-size: 5.6rem;
   }
@@ -557,6 +620,13 @@
       inset-block-end: 2.75rem;
       inset-inline-start: -4.2rem;
       inline-size: 8.4rem;
+    }
+
+    /* Full screen: a sticker in the photo's lower right, on the pink fabric. */
+    .bb-hero--fullscreen .bb-badge {
+      inset-block-end: 2.5rem;
+      inset-inline: auto 3rem;
+      inline-size: 9rem;
     }
   }
 
@@ -595,21 +665,21 @@
     line-height: 1;
   }
 
-  .bb-hero--banner .bb-badge__bow {
+  :is(.bb-hero--banner, .bb-hero--fullscreen) .bb-badge__bow {
     inline-size: 1.25rem;
   }
 
-  .bb-hero--banner .bb-badge__price {
+  :is(.bb-hero--banner, .bb-hero--fullscreen) .bb-badge__price {
     font-size: 1.35rem;
   }
 
   @media screen and (min-width: 750px) {
     .bb-badge__price,
-    .bb-hero--banner .bb-badge__price {
+    :is(.bb-hero--banner, .bb-hero--fullscreen) .bb-badge__price {
       font-size: 1.9rem;
     }
 
-    .bb-hero--banner .bb-badge__bow {
+    :is(.bb-hero--banner, .bb-hero--fullscreen) .bb-badge__bow {
       inline-size: 1.5rem;
     }
   }
@@ -628,6 +698,12 @@
   .bb-hero--banner .bb-hero__float--3 { inset: auto 14% 16% auto; --size: 1.6rem; }
   .bb-hero--banner .bb-hero__float--4 { inset: 3.4rem 24% auto auto; --size: 1rem; }
   .bb-hero--banner .bb-hero__float--5 { display: none; }
+
+  .bb-hero--fullscreen .bb-hero__float--1 { inset: 2rem auto auto 6%; --size: 2.4rem; }
+  .bb-hero--fullscreen .bb-hero__float--2 { inset: 3.2rem 8% auto auto; --size: 1.4rem; }
+  .bb-hero--fullscreen .bb-hero__float--3 { inset: auto 6% 3rem auto; --size: 1.9rem; }
+  .bb-hero--fullscreen .bb-hero__float--4 { inset: auto auto 4.5rem 12%; --size: 1.1rem; }
+  .bb-hero--fullscreen .bb-hero__float--5 { display: none; }
 
   .bb-hero .bb-float {
     --bb-float-delay: calc(var(--bb-hero-delay) + 0.6s);
@@ -651,6 +727,23 @@
 
     .bb-hero--banner .bb-hero__float--4 {
       inset: 2.6rem 22% auto auto;
+    }
+
+    /* Phones: one small bow either side of the bow above the headline. */
+    .bb-hero--fullscreen .bb-hero__float--1 {
+      display: block;
+      inset: 1.6rem auto auto 9%;
+      --size: 1.6rem;
+    }
+
+    .bb-hero--fullscreen .bb-hero__float--2 {
+      inset: 2.4rem 10% auto auto;
+      --size: 1.15rem;
+    }
+
+    .bb-hero--fullscreen .bb-hero__float--3,
+    .bb-hero--fullscreen .bb-hero__float--4 {
+      display: none;
     }
   }
 
@@ -843,6 +936,10 @@
         {
           "value": "banner",
           "label": "Banner filling the side of the screen"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen photo, words below"
         }
       ],
       "default": "framed"
@@ -937,7 +1034,7 @@
       "type": "select",
       "id": "image_ratio",
       "label": "Frame shape",
-      "info": "Framed layout only. The banner keeps 3:2.",
+      "info": "Framed layout only. The banner and full screen keep the photo's 3:2.",
       "options": [
         {
           "value": "landscape",
