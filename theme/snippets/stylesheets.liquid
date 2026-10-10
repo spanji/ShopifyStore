@@ -1,3 +1,26 @@
 {{ 'overflow-list.css' | asset_url | preload_tag: as: 'style' }}
 {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
 {{ 'bow-and-bloom.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Bow and Bloom: the real italic of the heading font, so italic headings (the
+  homepage's changing word, gift-tag group names) aren't a slanted fake. Preloaded
+  on the homepage, where the changing word is above the fold.
+{%- endcomment -%}
+{%- liquid
+  assign heading_italic = settings.type_heading_font | font_modify: 'style', 'italic'
+-%}
+{%- if heading_italic -%}
+  {%- if template.name == 'index' -%}
+    <link
+      rel="preload"
+      as="font"
+      href="{{ heading_italic | font_url }}"
+      type="font/woff2"
+      crossorigin
+    >
+  {%- endif -%}
+  <style>
+    {{ heading_italic | font_face: font_display: 'swap' }}
+  </style>
+{%- endif -%}

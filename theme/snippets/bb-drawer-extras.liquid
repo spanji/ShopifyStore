@@ -1,0 +1,128 @@
+{%- doc -%}
+  Bow and Bloom additions under the phone menu: a buy card for the first product of
+  the menu's first collection, with the berry buy button, then the shop's email and
+  social links. Settings live in the header section under "Phone menu extras".
+
+  @param {object} linklist - The menu the drawer shows.
+  @param {object} section - The header section.
+
+  @example
+  {% render 'bb-drawer-extras', linklist: linklist, section: section %}
+{%- enddoc -%}
+
+{%- liquid
+  assign header_settings = section.settings
+  assign card_product = null
+
+  if header_settings.drawer_card
+    for link in linklist.links
+      if link.type == 'collection_link' and link.object.products_count > 0
+        assign card_product = link.object.products.first
+        break
+      elsif link.type == 'product_link'
+        assign card_product = link.object
+        break
+      endif
+    endfor
+  endif
+
+  assign tiktok_url = ''
+  assign other_profiles = header_settings.business_profiles | newline_to_br | split: '<br />'
+  for profile in other_profiles
+    assign profile_url = profile | strip
+    if profile_url contains 'tiktok.com'
+      assign tiktok_url = profile_url
+      break
+    endif
+  endfor
+
+  assign show_contact = false
+  if header_settings.drawer_contact and shop.email != blank
+    assign show_contact = true
+  endif
+-%}
+
+{%- if card_product or show_contact -%}
+  <div
+    class="bb-drawer-extras menu-drawer__animated-element"
+    style="--menu-drawer-animation-index: {{ linklist.links.size | plus: 1 }};"
+  >
+    {%- if card_product -%}
+      {%- assign card_price = card_product.price | money_without_trailing_zeros -%}
+      <div class="bb-drawer-card">
+        <a
+          href="{{ card_product.url }}"
+          class="bb-drawer-card__media"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          {%- if card_product.featured_image -%}
+            {{
+              card_product.featured_image
+              | image_url: width: 240
+              | image_tag: widths: '120, 180, 240', sizes: '84px', loading: 'lazy', alt: ''
+            }}
+          {%- endif -%}
+        </a>
+        <div>
+          <p class="bb-drawer-card__title">{{ card_product.title | escape }}</p>
+          {%- if header_settings.drawer_card_note != blank -%}
+            <p class="bb-drawer-card__note">{{ header_settings.drawer_card_note | escape }}</p>
+          {%- endif -%}
+        </div>
+        {% render 'bb-cta',
+          url: card_product.url,
+          label: header_settings.drawer_button_label,
+          price: card_price,
+          class: 'bb-cta--small'
+        %}
+      </div>
+    {%- endif -%}
+
+    {%- if show_contact -%}
+      <ul
+        class="bb-drawer-contact"
+        role="list"
+      >
+        <li>
+          <a href="mailto:{{ shop.email }}">
+            <svg
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect x="2.5" y="4.5" width="15" height="11" rx="2" />
+              <path d="m3 5.5 7 5.2 7-5.2" />
+            </svg>
+            {{- shop.email -}}
+          </a>
+        </li>
+        {%- if tiktok_url != blank -%}
+          {%- assign tiktok_handle = tiktok_url | split: '/@' | last | split: '?' | first | split: '/' | first -%}
+          <li>
+            <a
+              href="{{ tiktok_url }}"
+              target="_blank"
+              rel="noopener"
+            >
+              <svg
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M11.5 3v9.2a2.8 2.8 0 1 1-2.8-2.8M11.5 3c.4 2.1 1.9 3.6 4 3.9" />
+              </svg>
+              {%- if tiktok_url contains '/@' -%}
+                TikTok @{{ tiktok_handle | escape }}
+              {%- else -%}
+                TikTok
+              {%- endif -%}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,0 +1,77 @@
+{%- doc -%}
+  Buy button block: the berry Bow and Bloom button with the product's live price.
+  Use it wherever a section should send people to buy, so every buy button looks the same.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product = block_settings.product
+  assign button_url = block_settings.link
+  if button_url == blank and product != blank
+    assign button_url = product.url
+  endif
+
+  assign price = ''
+  if block_settings.show_price and product != blank
+    assign price = product.price | money_without_trailing_zeros
+  endif
+
+  assign button_class = ''
+  if block_settings.full_width_mobile
+    assign button_class = 'bb-cta--full'
+  endif
+-%}
+
+{%- if button_url != blank -%}
+  {% render 'bb-cta',
+    url: button_url,
+    label: block_settings.label,
+    price: price,
+    class: button_class,
+    attributes: block.shopify_attributes
+  %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Buy button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Shop the hamper"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "The button links here and shows its price."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show the price",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Different link",
+      "info": "Optional. Leave empty to link to the product."
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width_mobile",
+      "label": "Full width on phones",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Buy button"
+    }
+  ]
+}
+{% endschema %}

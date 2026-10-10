@@ -1,0 +1,36 @@
+{%- doc -%}
+  The Bow and Bloom buy button: berry (the colour kept for buying), large, with the price
+  and an arrow chip, so the next step is unmistakable wherever it appears. Used by the
+  hero, the "Buy button" block, the menu drawer and the floating phone button.
+
+  @param {string} url - Where the button goes.
+  @param {string} label - What it says.
+  @param {string} [price] - Price text shown after the label, e.g. "£39".
+  @param {string} [class] - Extra classes: 'bb-cta--full' fills the width on phones, 'bb-cta--small' is a compact size.
+  @param {string} [attributes] - Extra attributes, e.g. block.shopify_attributes.
+
+  @example
+  {% render 'bb-cta', url: product.url, label: 'Shop the hamper', price: '£39', class: 'bb-cta--full' %}
+{%- enddoc -%}
+<a
+  href="{{ url }}"
+  class="bb-cta {{ class }}"
+  {{ attributes }}
+>
+  <span class="bb-cta__label">{{ label | escape }}</span>
+  {%- if price != blank -%}
+    <span class="bb-cta__price">{{ price }}</span>
+  {%- endif -%}
+  <span
+    class="bb-cta__arrow"
+    aria-hidden="true"
+  >
+    <svg
+      viewBox="0 0 20 20"
+      focusable="false"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M4 10h11.5M10.8 5.2 15.6 10l-4.8 4.8" />
+    </svg>
+  </span>
+</a>

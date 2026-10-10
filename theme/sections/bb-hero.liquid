@@ -1,0 +1,1032 @@
+{% comment %}
+  Bow and Bloom homepage hero.
+  - A headline whose last words change ("Hampers for your best friend / sister / mum..."),
+    in rosewood italic with a ribbon that draws itself under each one. Search engines
+    and screen readers get the whole sentence once; the moving copy is hidden from them.
+  - The berry buy button with the live price, trust points, and the banner in a frame
+    with wrapping paper peeking out behind it, a slowly turning price badge and a few
+    floating bows. A pause button stops every looping animation on the page.
+  - On the first visit of a browser session the wrapping opens: a big bow ties itself,
+    the ribbons unroll, then the paper parts and the bow settles above the headline.
+    snippets/scripts.liquid flags the visit in <head>; assets/bow-and-bloom.js runs the
+    words, the pause button, the skip and the floating phone button.
+  Without JavaScript, or with reduced motion, everything shows still and complete.
+{% endcomment %}
+
+{%- liquid
+  assign s = section.settings
+  assign product = s.product
+
+  assign raw_words = s.words | newline_to_br | split: '<br />'
+  assign word_list = ''
+  for raw_word in raw_words
+    assign clean_word = raw_word | strip | replace: '|', ''
+    if clean_word != blank
+      assign word_list = word_list | append: clean_word | append: '|'
+    endif
+  endfor
+  assign words = word_list | split: '|'
+  assign first_word = words.first
+
+  capture spoken_words
+    for word in words
+      if forloop.first
+        echo word
+      elsif forloop.last
+        echo ' or ' | append: word
+      else
+        echo ', ' | append: word
+      endif
+    endfor
+  endcapture
+
+  assign button_url = s.button_link
+  if button_url == blank and product != blank
+    assign button_url = product.url
+  endif
+
+  assign price = ''
+  if s.show_price and product != blank
+    assign price = product.price | money_without_trailing_zeros
+  endif
+
+  assign raw_points = s.trust | newline_to_br | split: '<br />'
+
+  assign show_intro = false
+  if s.intro and request.design_mode == false
+    assign show_intro = true
+  endif
+
+  assign image_alt = s.image.alt | default: s.image_alt
+-%}
+
+<div class="section-background color-{{ s.color_scheme }}"></div>
+<div
+  id="BbHero-{{ section.id }}"
+  class="section page-width-content bb-hero color-{{ s.color_scheme }} spacing-style"
+  style="{% render 'spacing-style', settings: s %}"
+  data-pause-label="{{ s.pause_label | escape }}"
+  data-play-label="{{ s.play_label | escape }}"
+>
+  <div class="bb-hero__inner">
+    <div class="bb-hero__text">
+      <span
+        class="bb-hero__bow"
+        aria-hidden="true"
+      ></span>
+
+      <h1 class="bb-hero__title">
+        <span
+          class="bb-hero__lead"
+          data-bb-enter
+          style="--d: 0.05s;"
+          >{{- s.heading_lead | escape -}}</span
+        >
+        {%- if words.size > 0 -%}
+          <span class="visually-hidden"> {{ spoken_words | strip | escape }}</span>
+          <span
+            class="bb-rotator"
+            aria-hidden="true"
+            data-words="{{ words | json | escape }}"
+            data-seconds="{{ s.word_seconds }}"
+          >
+            {%- assign chars = first_word | split: '' -%}
+            <span
+              class="bb-rotator__word bb-rotator__word--first"
+              style="--n: {{ chars.size }};"
+            >
+              {%- comment -%}
+                Letters are drawn from data-c by CSS, so the page text (and the h1 Google
+                reads) holds the full sentence once, not the sentence plus this word.
+              {%- endcomment -%}
+              {%- for char in chars -%}
+                <span
+                  class="bb-rotator__char"
+                  data-c="{{ char | escape }}"
+                  style="--i: {{ forloop.index0 }};"
+                ></span>
+              {%- endfor -%}
+              <svg
+                class="bb-rotator__ribbon"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path pathLength="1" d="M2 8.2C34 3.4 62 10.6 101 6.6S168 3.2 198 7.4" />
+              </svg>
+            </span>
+          </span>
+        {%- endif -%}
+      </h1>
+
+      {%- if s.subline != blank -%}
+        <p
+          class="bb-hero__sub"
+          data-bb-enter
+          style="--d: 0.35s;"
+        >
+          {{ s.subline | escape }}
+        </p>
+      {%- endif -%}
+
+      {%- if button_url != blank -%}
+        <div
+          class="bb-hero__actions"
+          data-bb-enter
+          style="--d: 0.5s;"
+        >
+          {% render 'bb-cta', url: button_url, label: s.button_label, price: price, class: 'bb-cta--full bb-cta--hero' %}
+        </div>
+      {%- endif -%}
+
+      <ul
+        class="bb-hero__trust"
+        role="list"
+      >
+        {%- for raw_point in raw_points -%}
+          {%- assign point = raw_point | strip -%}
+          {%- if point != blank -%}
+            <li
+              data-bb-enter
+              style="--d: {{ forloop.index0 | times: 0.08 | plus: 0.65 }}s;"
+            >
+              {{ point | escape }}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+
+    <div class="bb-hero__media">
+      <div class="bb-hero__frame">
+        {%- if s.image != blank -%}
+          {%- if button_url != blank -%}
+            <a
+              href="{{ button_url }}"
+              class="bb-hero__image-link"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+          {%- endif -%}
+          {{
+            s.image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'bb-hero__image',
+              widths: '480, 720, 960, 1200, 1600',
+              sizes: '(min-width: 750px) 52vw, calc(100vw - 32px)',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: image_alt
+          }}
+          {%- if button_url != blank -%}
+            </a>
+          {%- endif -%}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'bb-hero__image bb-hero__placeholder' }}
+        {%- endif -%}
+      </div>
+
+      {%- if s.show_badge -%}
+        <div
+          class="bb-badge"
+          aria-hidden="true"
+        >
+          <svg
+            class="bb-badge__ring"
+            viewBox="0 0 120 120"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <path
+                id="BbBadgePath-{{ section.id }}"
+                d="M60 60m-45 0a45 45 0 1 1 90 0a45 45 0 1 1-90 0"
+              />
+            </defs>
+            <text>
+              <textPath
+                href="#BbBadgePath-{{ section.id }}"
+                textLength="281"
+                lengthAdjust="spacing"
+              >
+                {{- s.badge_text | upcase | escape -}}
+              </textPath>
+            </text>
+          </svg>
+          <span class="bb-badge__centre">
+            <span class="bb-badge__bow"></span>
+            {%- if price != blank -%}
+              <span class="bb-badge__price">{{ price }}</span>
+            {%- endif -%}
+          </span>
+        </div>
+      {%- endif -%}
+
+      {%- if s.show_bows -%}
+        {%- for i in (1..5) -%}
+          <span
+            class="bb-hero__float bb-hero__float--{{ i }}"
+            aria-hidden="true"
+          ></span>
+        {%- endfor -%}
+      {%- endif -%}
+
+      <button
+        type="button"
+        class="bb-motion-toggle"
+        aria-pressed="false"
+        aria-label="{{ s.pause_label | escape }}"
+        title="{{ s.pause_label | escape }}"
+      >
+        <svg
+          class="bb-motion-toggle__pause"
+          viewBox="0 0 20 20"
+          focusable="false"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M7 5v10M13 5v10" />
+        </svg>
+        <svg
+          class="bb-motion-toggle__play"
+          viewBox="0 0 20 20"
+          focusable="false"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M7.5 5.2v9.6l7.4-4.8z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+{%- if s.floating_button and button_url != blank -%}
+  {% render 'bb-cta', url: button_url, label: s.button_label, price: price, class: 'bb-float-cta' %}
+{%- endif -%}
+
+{%- if show_intro -%}
+  {%- comment -%}
+    The first-visit intro. It runs only when <head> flagged this visit (first of the
+    session, motion allowed) and the page arrived quickly enough to play it from the start.
+    The bow then flies to the small bow above the headline.
+  {%- endcomment -%}
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var pending = root.classList.contains('bb-intro-pending');
+      root.classList.remove('bb-intro-pending');
+      if (!pending || performance.now() > 2500) return;
+      var hero = document.getElementById('BbHero-{{ section.id }}');
+      if (!hero) return;
+      try {
+        sessionStorage.setItem('bb-intro', '1');
+      } catch (error) {}
+      hero.setAttribute('data-intro', 'on');
+      root.classList.add('bb-intro');
+
+      var target = hero.querySelector('.bb-hero__bow');
+      var width = Math.min(window.innerWidth * 0.64, 320);
+      var centreX = window.innerWidth / 2;
+      var centreY = window.innerHeight / 2 + width * 0.081;
+      if (target && window.scrollY === 0) {
+        var box = target.getBoundingClientRect();
+        root.style.setProperty('--bb-fly-x', box.left + box.width / 2 - centreX + 'px');
+        root.style.setProperty('--bb-fly-y', box.top + box.height / 2 - centreY + 'px');
+        root.style.setProperty('--bb-fly-scale', String(box.width / width));
+      }
+    })();
+  </script>
+  <div
+    class="bb-intro color-{{ s.color_scheme }}"
+    aria-hidden="true"
+  >
+    <div class="bb-intro__half bb-intro__half--start"><span class="bb-intro__ribbon"></span></div>
+    <div class="bb-intro__half bb-intro__half--end"><span class="bb-intro__ribbon"></span></div>
+    <span class="bb-intro__vribbon"></span>
+    <div class="bb-intro__bow">
+      {% render 'bow', style: 'line', class: 'bb-intro__bow-line' %}
+      {% render 'bow', class: 'bb-intro__bow-fill' %}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  /* ---------- Layout ---------- */
+
+  .bb-hero {
+    --bb-hero-delay: 0.1s;
+    --bb-word-colour: var(--color-primary);
+    --bb-frame-radius: 22px;
+
+    overflow-x: clip;
+  }
+
+  .bb-hero__inner {
+    display: grid;
+    gap: 2.25rem;
+    padding-block: 1.6rem 3.25rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-hero {
+      --bb-frame-radius: 30px;
+    }
+
+    .bb-hero__inner {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      align-items: center;
+      gap: clamp(2.5rem, 5vw, 5.5rem);
+      min-block-size: min(calc(100svh - 110px), 760px);
+      padding-block: 2.5rem 4rem;
+    }
+  }
+
+  .bb-hero__text {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ---------- Headline ---------- */
+
+  .bb-hero__bow {
+    display: block;
+    inline-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    aspect-ratio: 80 / 48;
+    margin-block-end: 0.9rem;
+    background-color: var(--color-primary);
+    mask: var(--bb-bow) center / contain no-repeat;
+    transform-origin: 50% 40%;
+  }
+
+  .bb-hero__title {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(2.55rem, 1.55rem + 4.1vw, 4.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    color: var(--color-foreground-heading);
+  }
+
+  .bb-hero__lead {
+    display: block;
+    text-wrap: balance;
+  }
+
+  .bb-rotator {
+    position: relative;
+    display: block;
+    min-block-size: 1.2em;
+    padding-block-end: 0.12em;
+    font-size: 1.1em;
+    font-style: italic;
+    line-height: 1.1;
+    white-space: nowrap;
+    color: var(--bb-word-colour);
+  }
+
+  .bb-rotator__word {
+    position: relative;
+    display: inline-block;
+  }
+
+  .bb-rotator__word.is-out {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
+
+  .bb-rotator__char {
+    display: inline-block;
+    white-space: pre;
+  }
+
+  .bb-rotator__char::before {
+    content: attr(data-c);
+  }
+
+  .bb-rotator__ribbon {
+    position: absolute;
+    inset-inline-start: -0.04em;
+    inset-block-end: -0.12em;
+    inline-size: calc(100% + 0.1em);
+    block-size: 0.24em;
+    overflow: visible;
+  }
+
+  .bb-rotator__ribbon path {
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+
+  .bb-hero__sub {
+    max-inline-size: 34ch;
+    margin-block: 1.15rem 1.6rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .bb-hero__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1.3rem;
+    margin: 1.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9375rem;
+  }
+
+  .bb-hero__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .bb-hero__trust li::before {
+    content: '';
+    flex: none;
+    inline-size: 1.15em;
+    aspect-ratio: 80 / 48;
+    background-color: var(--color-primary);
+    mask: var(--bb-bow) center / contain no-repeat;
+  }
+
+  /* ---------- Banner, wrapping paper, badge and bows ---------- */
+
+  .bb-hero__media {
+    position: relative;
+    margin-inline-end: 8px;
+  }
+
+  /* Wrapping paper peeking out from behind the photo: a petal sheet with a bow print. */
+  .bb-hero__media::before,
+  .bb-hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--bb-frame-radius);
+    translate: 10px 10px;
+    rotate: 2deg;
+  }
+
+  .bb-hero__media::before {
+    background-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-background));
+  }
+
+  .bb-hero__media::after {
+    background-color: rgb(var(--color-foreground-rgb) / 0.11);
+    mask: var(--bb-pattern) 0 0 / 88px repeat;
+  }
+
+  .bb-hero__frame {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    border-radius: var(--bb-frame-radius);
+    background: var(--color-background);
+    box-shadow: 0 34px 60px -34px rgb(var(--color-shadow-rgb) / 0.55);
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-hero__media {
+      margin-inline-end: 0;
+    }
+
+    .bb-hero__media::before,
+    .bb-hero__media::after {
+      translate: 18px 18px;
+      rotate: 2.5deg;
+    }
+  }
+
+  .bb-hero__image-link {
+    display: block;
+    block-size: 100%;
+  }
+
+  .bb-hero__image {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .bb-badge {
+    position: absolute;
+    z-index: 3;
+    inset-block-end: -2.6rem;
+    inset-inline-end: 0.9rem;
+    display: grid;
+    place-items: center;
+    inline-size: 6.6rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: var(--color-foreground-heading);
+    background: var(--color-background);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent),
+      0 16px 30px -18px rgb(var(--color-shadow-rgb) / 0.6);
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-badge {
+      inset-block-end: -3rem;
+      inset-inline-start: -3rem;
+      inset-inline-end: auto;
+      inline-size: 8.4rem;
+    }
+  }
+
+  .bb-badge__ring {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .bb-badge__ring text {
+    font-family: var(--font-body--family);
+    font-size: 10.2px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: currentcolor;
+  }
+
+  .bb-badge__centre {
+    display: grid;
+    justify-items: center;
+    gap: 0.1rem;
+  }
+
+  .bb-badge__bow {
+    inline-size: 1.5rem;
+    aspect-ratio: 80 / 48;
+    background-color: var(--color-primary);
+    mask: var(--bb-bow) center / contain no-repeat;
+  }
+
+  .bb-badge__price {
+    font-family: var(--font-heading--family);
+    font-size: 1.55rem;
+    line-height: 1;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bb-badge__price {
+      font-size: 1.9rem;
+    }
+  }
+
+  .bb-hero__float {
+    position: absolute;
+    z-index: 2;
+    inline-size: var(--size, 2rem);
+    aspect-ratio: 80 / 48;
+    background-color: var(--colour, var(--color-primary));
+    mask: var(--bb-bow) center / contain no-repeat;
+    opacity: var(--alpha, 0.5);
+    rotate: var(--r, 0deg);
+    pointer-events: none;
+  }
+
+  .bb-hero__float--1 { --size: 2.6rem; --alpha: 0.55; --r: -14deg; inset-block-start: -1.4rem; inset-inline-start: 12%; }
+  .bb-hero__float--2 { --size: 1.4rem; --alpha: 0.4; --r: 18deg; inset-block-start: 18%; inset-inline-end: -0.6rem; }
+  .bb-hero__float--3 { --size: 1.9rem; --alpha: 0.35; --r: 10deg; inset-block-end: 24%; inset-inline-start: -0.9rem; }
+  .bb-hero__float--4 { --size: 1.1rem; --alpha: 0.45; --r: 24deg; inset-block-start: -0.6rem; inset-inline-end: 22%; }
+  .bb-hero__float--5 { --size: 1.6rem; --alpha: 0.3; --r: -20deg; inset-block-end: -1.6rem; inset-inline-start: 38%; }
+
+  @media screen and (max-width: 749px) {
+    .bb-hero__float--3,
+    .bb-hero__float--5 {
+      display: none;
+    }
+  }
+
+  /* Pause button: stops every looping animation on the page (WCAG 2.2.2). */
+  .bb-motion-toggle {
+    position: absolute;
+    z-index: 3;
+    inset-block-start: 0.75rem;
+    inset-inline-start: 0.75rem;
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    color: var(--color-foreground-heading);
+    background: rgb(255 255 255 / 0.72);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 16px -10px rgb(var(--color-shadow-rgb) / 0.8);
+    cursor: pointer;
+    opacity: 0.85;
+    transition: opacity 0.2s, scale 0.2s;
+  }
+
+  .bb-motion-toggle:hover {
+    opacity: 1;
+    scale: 1.06;
+  }
+
+  .bb-motion-toggle:focus-visible {
+    outline: 2px solid var(--color-foreground-heading);
+    outline-offset: 2px;
+    opacity: 1;
+  }
+
+  .bb-motion-toggle svg {
+    inline-size: 1.05rem;
+    block-size: 1.05rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .bb-motion-toggle__play {
+    display: none;
+    fill: currentcolor !important;
+  }
+
+  .bb-motion-toggle[aria-pressed='true'] .bb-motion-toggle__pause {
+    display: none;
+  }
+
+  .bb-motion-toggle[aria-pressed='true'] .bb-motion-toggle__play {
+    display: block;
+  }
+
+  /* Nothing loops for people who asked for less motion, so the button isn't needed. */
+  @media (prefers-reduced-motion: reduce) {
+    .bb-motion-toggle {
+      display: none;
+    }
+  }
+
+  /* ---------- Entrance on every visit ---------- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bb-hero__bow {
+      animation: bb-tie 0.9s var(--bb-ease-out) var(--bb-hero-delay) both;
+    }
+
+    .bb-hero [data-bb-enter] {
+      animation: bb-hero-in 0.9s var(--bb-ease-out) both;
+      animation-delay: calc(var(--bb-hero-delay) + var(--d, 0s));
+    }
+
+    .bb-rotator__word--first {
+      --bb-word-delay: calc(var(--bb-hero-delay) + 0.2s);
+    }
+
+    .bb-rotator__char {
+      animation: bb-char-in 0.75s var(--bb-ease-out) both;
+      animation-delay: calc(var(--bb-word-delay, 0s) + var(--i, 0) * 34ms);
+    }
+
+    .bb-rotator__ribbon path {
+      animation: bb-ribbon-draw 0.8s var(--bb-ease-out) both;
+      animation-delay: calc(var(--bb-word-delay, 0s) + 0.35s + var(--n, 6) * 34ms);
+    }
+
+    .bb-rotator__word.is-out .bb-rotator__char {
+      animation: bb-char-out 0.42s cubic-bezier(0.55, 0, 0.75, 0.2) both;
+      animation-delay: calc(var(--i, 0) * 16ms);
+    }
+
+    .bb-rotator__word.is-out .bb-rotator__ribbon path {
+      animation: bb-ribbon-out 0.3s ease-in both;
+    }
+
+    .bb-hero__frame {
+      animation: bb-frame-in 1.3s var(--bb-ease-out) var(--bb-hero-delay) both;
+    }
+
+    .bb-hero__image {
+      animation: bb-image-settle 1.8s var(--bb-ease-out) var(--bb-hero-delay) both;
+    }
+
+    .bb-hero__media::before,
+    .bb-hero__media::after {
+      animation: bb-paper-in 1.3s var(--bb-ease-tie) calc(var(--bb-hero-delay) + 0.25s) both;
+    }
+
+    .bb-badge {
+      animation: bb-badge-in 0.9s var(--bb-ease-tie) calc(var(--bb-hero-delay) + 0.75s) both;
+    }
+
+    .bb-badge__ring {
+      animation: bb-spin 24s linear infinite;
+    }
+
+    .bb-hero__float {
+      animation:
+        bb-float-in 0.8s var(--bb-ease-tie) calc(var(--bb-hero-delay) + 0.6s + var(--k, 0) * 0.12s) both,
+        bb-float 7s ease-in-out calc(var(--bb-hero-delay) + 1.4s + var(--k, 0) * 0.9s) infinite alternate;
+    }
+
+    .bb-hero__float--2 { --k: 1; }
+    .bb-hero__float--3 { --k: 2; }
+    .bb-hero__float--4 { --k: 3; }
+    .bb-hero__float--5 { --k: 4; }
+
+    /* After the intro the bow above the headline appears where the big bow lands. */
+    .bb-hero[data-intro='on'] {
+      --bb-hero-delay: 1.5s;
+    }
+
+    .bb-hero[data-intro='on'] .bb-hero__bow {
+      animation: bb-appear 0.01s linear 2.04s both;
+    }
+
+    .bb-hero[data-intro='skipped'] {
+      --bb-hero-delay: 0s;
+    }
+  }
+
+  @keyframes bb-hero-in {
+    from {
+      opacity: 0;
+      translate: 0 22px;
+    }
+  }
+
+  @keyframes bb-char-in {
+    from {
+      opacity: 0;
+      translate: 0 0.5em;
+      filter: blur(8px);
+    }
+  }
+
+  @keyframes bb-char-out {
+    to {
+      opacity: 0;
+      translate: 0 -0.4em;
+      filter: blur(6px);
+    }
+  }
+
+  @keyframes bb-ribbon-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @keyframes bb-ribbon-out {
+    to {
+      stroke-dashoffset: -1;
+    }
+  }
+
+  @keyframes bb-frame-in {
+    from {
+      scale: 0.96;
+      translate: 0 18px;
+    }
+  }
+
+  @keyframes bb-image-settle {
+    from {
+      scale: 1.1;
+    }
+  }
+
+  @keyframes bb-paper-in {
+    from {
+      translate: 0 0;
+      rotate: 0deg;
+    }
+  }
+
+  @keyframes bb-badge-in {
+    from {
+      opacity: 0;
+      scale: 0.4;
+      rotate: -40deg;
+    }
+  }
+
+  @keyframes bb-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  @keyframes bb-float-in {
+    from {
+      opacity: 0;
+      scale: 0.2;
+    }
+  }
+
+  @keyframes bb-float {
+    from {
+      translate: 0 0;
+      rotate: calc(var(--r, 0deg) - 6deg);
+    }
+    to {
+      translate: 0 -12px;
+      rotate: calc(var(--r, 0deg) + 6deg);
+    }
+  }
+
+  @keyframes bb-appear {
+    from {
+      opacity: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero (Bow & Bloom)",
+  "class": "section-wrapper",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "info": "The button links here and shows its live price."
+    },
+    {
+      "type": "checkbox",
+      "id": "intro",
+      "label": "Bow intro on the first visit",
+      "info": "Plays once per visit, skips on any tap or key, and never plays for people who turn motion off.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Headline"
+    },
+    {
+      "type": "text",
+      "id": "heading_lead",
+      "label": "Start of the headline",
+      "default": "Hampers for your"
+    },
+    {
+      "type": "textarea",
+      "id": "words",
+      "label": "Changing words",
+      "info": "One per line. Each must finish the headline as a sentence.",
+      "default": "best friend\ngirlfriend\nsister\nmum\ndaughter"
+    },
+    {
+      "type": "range",
+      "id": "word_seconds",
+      "label": "Seconds per word",
+      "min": 2,
+      "max": 6,
+      "step": 0.5,
+      "unit": "s",
+      "default": 2.5
+    },
+    {
+      "type": "text",
+      "id": "subline",
+      "label": "Line under the headline",
+      "default": "17 pamper treats, wrapped in pink and tied with a bow."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Shop the hamper"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show the price",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Different link",
+      "info": "Optional. Leave empty to link to the product."
+    },
+    {
+      "type": "checkbox",
+      "id": "floating_button",
+      "label": "Floating button on phones",
+      "info": "Slides up when no other buy button is on screen.",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "trust",
+      "label": "Points under the button",
+      "info": "One per line. Only things that are always true.",
+      "default": "Free tracked UK delivery\nPacked by hand in Yorkshire\nFree gift message"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "3:2 landscape works best."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image description",
+      "info": "Used when the image has no alt text of its own."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Turning price badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "info": "Short. It runs round the circle.",
+      "default": "17 treats • Free UK delivery • Packed by hand • "
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bows",
+      "label": "Floating bows",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pause button"
+    },
+    {
+      "type": "text",
+      "id": "pause_label",
+      "label": "Pause label",
+      "default": "Pause animations"
+    },
+    {
+      "type": "text",
+      "id": "play_label",
+      "label": "Play label",
+      "default": "Play animations"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero (Bow & Bloom)"
+    }
+  ]
+}
+{% endschema %}

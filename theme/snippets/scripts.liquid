@@ -278,12 +278,27 @@
   defer="defer"
 ></script>
 
-{% # Bow and Bloom: scroll reveals and smooth FAQ questions. %}
+{% # Bow and Bloom: hero motion, scroll reveals and smooth FAQ questions. %}
 <script
   src="{{ 'bow-and-bloom.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
+
+{%- if template.name == 'index' and request.design_mode == false -%}
+  {%- comment -%}
+    Bow and Bloom: flags the first homepage visit of a browser session, before
+    anything paints, so the bow intro in sections/bb-hero.liquid can cover the page
+    from the first frame. Never flagged for people who prefer reduced motion.
+  {%- endcomment -%}
+  <script>
+    try {
+      if (!sessionStorage.getItem('bb-intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('bb-intro-pending');
+      }
+    } catch (error) {}
+  </script>
+{%- endif -%}
 
 <script>
   const Theme = {

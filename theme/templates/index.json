@@ -1,133 +1,27 @@
 {
   "sections": {
     "hero": {
-      "type": "media-with-content",
+      "type": "bb-hero",
       "name": "Hero",
-      "blocks": {
-        "media": {
-          "type": "_media-without-appearance",
-          "static": true,
-          "settings": {
-            "media_type": "image",
-            "image": "shopify://shop_images/bow-and-bloom-banner-v2.jpg",
-            "link": "shopify://products/birthday-pamper-hamper-for-her",
-            "image_position": "cover"
-          },
-          "blocks": {}
-        },
-        "content": {
-          "type": "_content-without-appearance",
-          "static": true,
-          "settings": {
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 20
-          },
-          "blocks": {
-            "intro_heading": {
-              "type": "text",
-              "settings": {
-                "text": "<h1>Birthday hampers she'll love</h1>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h1",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "balance",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "intro_subline": {
-              "type": "text",
-              "settings": {
-                "text": "<p>17 pamper treats, wrapped in pink and tied with a bow.</p>",
-                "width": "100%",
-                "max_width": "narrow",
-                "alignment": "left",
-                "type_preset": "custom",
-                "font": "var(--font-body--family)",
-                "font_size": "1.125rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "intro_button": {
-              "type": "button",
-              "settings": {
-                "label": "Shop the £39 hamper",
-                "link": "shopify://products/birthday-pamper-hamper-for-her",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
-              },
-              "blocks": {}
-            },
-            "intro_trust": {
-              "type": "text",
-              "settings": {
-                "text": "<ul><li>Free tracked UK delivery</li><li>Packed by hand in Yorkshire</li><li>Free gift message</li></ul>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "0.9375rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "intro_heading",
-            "intro_subline",
-            "intro_button",
-            "intro_trust"
-          ]
-        }
-      },
       "settings": {
-        "media_position": "right",
-        "media_width": "wide",
-        "media_height": "auto",
-        "section_width": "full-width",
-        "extend_media": true,
+        "product": "birthday-pamper-hamper-for-her",
+        "intro": true,
+        "heading_lead": "Hampers for your",
+        "words": "best friend\ngirlfriend\nsister\nmum\ndaughter",
+        "word_seconds": 2.5,
+        "subline": "17 pamper treats, wrapped in pink and tied with a bow.",
+        "button_label": "Shop the hamper",
+        "show_price": true,
+        "button_link": "",
+        "floating_button": true,
+        "trust": "Free tracked UK delivery\nPacked by hand in Yorkshire\nFree gift message",
+        "image": "shopify://shop_images/bow-and-bloom-banner-v2.jpg",
+        "image_alt": "Pink roses wrapped in tissue and satin ribbon, with a Bow & Bloom gift tag and a card that reads Small gifts for big moments",
+        "show_badge": true,
+        "badge_text": "17 treats • Free UK delivery • Packed by hand • ",
+        "show_bows": true,
+        "pause_label": "Pause animations",
+        "play_label": "Play animations",
         "color_scheme": "scheme-1",
         "padding-block-start": 0,
         "padding-block-end": 0
@@ -232,17 +126,14 @@
               },
               "blocks": {}
             },
-            "button": {
-              "type": "button",
+            "buy_button": {
+              "type": "bb-cta",
               "settings": {
                 "label": "Shop the hamper",
-                "link": "shopify://products/birthday-pamper-hamper-for-her",
-                "open_in_new_tab": false,
-                "style_class": "button",
-                "width": "fit-content",
-                "custom_width": 100,
-                "width_mobile": "fit-content",
-                "custom_width_mobile": 100
+                "product": "birthday-pamper-hamper-for-her",
+                "show_price": true,
+                "link": "",
+                "full_width_mobile": true
               },
               "blocks": {}
             }
@@ -251,7 +142,7 @@
             "caption",
             "heading",
             "contents",
-            "button"
+            "buy_button"
           ]
         }
       },
@@ -656,8 +547,8 @@
   },
   "order": [
     "hero",
-    "birthday_box",
     "marquee",
+    "birthday_box",
     "section_x8mrnx",
     "ribbon_faq",
     "faq"

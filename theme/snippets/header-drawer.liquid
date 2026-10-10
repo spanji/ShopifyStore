@@ -572,6 +572,8 @@
           {% endif %}
         </ul>
       </nav>
+      {%- # Bow and Bloom: a buy card and contact links under the menu. -%}
+      {% render 'bb-drawer-extras', linklist: linklist, section: section %}
       <div
         class="menu-drawer__utility-links menu-drawer__animated-element"
         style="--menu-drawer-animation-index: {{ linklist.links.size }};"
