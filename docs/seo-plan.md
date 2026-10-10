@@ -79,13 +79,13 @@ Exact text to paste. About 20 minutes in total.
 
 Shopify adds " – Bow & Bloom" to each title, which keeps them all under 60 characters. Once the policies are live, the FAQ's returns answer also gets a link to the refund policy.
 
-### 1.3 Theme fixes on v2 (unpublished; you publish)
+### 1.3 Theme fixes, on "Bow and Bloom v3 (SEO)" (unpublished; you publish)
 
 1. **One main heading on the homepage.** The logo and the hero headline are both marked as the page's main heading (H1). Keep the hero headline, "Birthday hampers she'll love".
 2. **Faster first picture on the homepage.** The banner is the first thing that loads but isn't marked as a priority, and it's sized for 1x/2x/3x screens rather than the screen's real width. Rough phone test (slow 4G, mid-range phone): the main picture appeared after about 4.3 s, on the edge of Google's "poor" rating. The preview bar adds weight that customers won't get. Re-measure with PageSpeed Insights after launch.
 3. **Business details for Google and AI assistants:**
    - Business: add the alternate name "Bow and Bloom", the TikTok profile, the email, phone and address.
-   - Product: add delivery (free, UK, 2–5 working days) and returns (14 days, by post, buyer pays postage) once the policies are live. Google now asks for both on shopping results.
+   - Returns (14 days, by post, buyer pays postage), stated once for the whole shop and switched on automatically when the refund policy exists. Delivery details reach Google Shopping through Merchant Center's shipping settings.
    - FAQ page: questions-and-answers markup.
    - Never mark up ratings until real reviews exist.
 4. **Collection page:** a short intro near the box, then longer copy and 4–5 questions below it (delivery, gift message, allergens, sending to her address). It's thin today at 96 words.
@@ -213,7 +213,7 @@ Every app adds weight to the shop, so check the speed again after each install.
 
 ## Appendix: audit findings, 10 Oct 2026
 
-Checked on the v2 preview (theme 197109285197) and through the Shopify connector. Not checkable while the password is on: sitemap.xml, how Google sees the live shop, real-world speed.
+Checked on the v2 preview (theme 197109285197, live since the owner published it on 10 Oct 2026) and through the Shopify connector. Not checkable while the password is on: sitemap.xml, how Google sees the live shop, real-world speed.
 
 | Finding | Status | Fix |
 |---|---|---|
