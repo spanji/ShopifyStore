@@ -232,7 +232,7 @@ Checked on the v2 preview (theme 197109285197, live since the owner published it
 |---|---|---|
 | robots.txt allows all search and AI crawlers | Good | none |
 | Pages render without JavaScript; every image has alt text | Good | none |
-| Product: search title and description set, tagged, categorised (Gift Giving), 301 redirect from the old address | Good | Checked with `shopify-category-taxonomy` on 10 Oct 2026: "Gift Giving" (ae-3-1) is a broad parent; "Health & Beauty > Personal Care > Cosmetics > Bath & Body Gift Sets" (hb-3-2-2) is the closest specific match for a pamper box. The box mixes categories, so the switch waits for the owner's yes |
+| Product: search title and description set, tagged, categorised (Gift Giving), 301 redirect from the old address | Good | Checked with `shopify-category-taxonomy` on 10 Oct 2026: "Gift Giving" (ae-3-1) is a broad parent; "Health & Beauty > Personal Care > Cosmetics > Bath & Body Gift Sets" (hb-3-2-2) is the closest specific match for a pamper box. Switched on the owner's yes, 10 Oct 2026. |
 | Product structured data (ProductGroup, two variants, price, stock) | Good, incomplete | Add delivery and returns (1.3) |
 | Homepage title is just the shop name; no description; no share image | Needs work | 1.1 |
 | Homepage has two main headings (H1) | Needs work | 1.3 |
