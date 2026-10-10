@@ -100,18 +100,11 @@ function initIntro() {
 
   for (const type of events) window.addEventListener(type, skip, { passive: true });
 
-  // The CSS hides the overlay 2.1s after it first draws, however late that is on a
-  // slow connection; tidy up when it does. The timeout only covers a page where the
-  // overlay never draws at all.
-  const overlay = document.querySelector('.bb-intro');
-  overlay?.addEventListener('animationend', (event) => {
+  // The CSS hides the overlay 2.1s after it first draws, however late that is (a slow
+  // connection, or a tab opened in the background); tidy up when it does.
+  document.querySelector('.bb-intro')?.addEventListener('animationend', (event) => {
     if (event.target === event.currentTarget) finish();
   });
-  let started = false;
-  overlay?.addEventListener('animationstart', () => (started = true), { once: true });
-  window.setTimeout(() => {
-    if (!started) finish();
-  }, 8000);
 }
 
 /* ---------- The changing headline word ---------- */
