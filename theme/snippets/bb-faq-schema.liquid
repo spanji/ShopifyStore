@@ -1,0 +1,31 @@
+{%- doc -%}
+  Outputs FAQPage structured data for a page whose questions use <details class="bb-faq">,
+  taken from the page's own visible questions and answers.
+
+  @param {string} content - The page's HTML content
+{%- enddoc -%}
+
+{%- assign faq_parts = content | split: '<details class="bb-faq">' -%}
+{%- if faq_parts.size > 1 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for part in faq_parts offset: 1 -%}
+          {%- assign faq_question = part | split: '</summary>' | first | strip_html | strip -%}
+          {%- assign faq_answer = part | split: '</summary>' | last | split: '</details>' | first | strip_html | strip -%}
+          {
+            "@type": "Question",
+            "name": {{ faq_question | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ faq_answer | json }}
+            }
+          }
+          {%- unless forloop.last %},{% endunless -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
