@@ -35,7 +35,7 @@ Nobody can promise a ranking or a date. Nothing below will show results within t
 | Name | Written as **Bow & Bloom** everywhere people read it (matches the logo, box and videos). "bowandbloom" in web addresses and handles. Structured data lists "Bow and Bloom" as an alternate name, so both spellings point to one business. Owner asked for whichever performs best; search treats "&" and "and" the same, so consistency is what counts. |
 | Domain | Owner decides tomorrow. Checked 10 Oct: bowbloom.com taken; bowbloomgifts.com and bowbloomgiftboxes.com available. .co.uk names not checked yet. |
 | Christmas 2026 | Skipped. |
-| Policies | All five go back on the site, short, promising nothing beyond the law and what the site already says. |
+| Policies | Only the two Google Shopping needs go back: refund policy and contact information (owner changed this on 10 Oct 2026; the other three were inaccurate or too invasive). |
 | Main buyers | Best friends, partners and girlfriends, family (mum, sister, daughter). |
 | TikTok bio link | Straight to the product page, with tracking added. |
 | TikTok Shop | Maybe later. Install the free TikTok app now for tracking only. |
@@ -73,7 +73,7 @@ Exact text to paste. About 20 minutes in total.
    - Social sharing image: the hamper photo for now (not the banner, which shows flowers we don't sell). Swap in the new real hero photo when you have it. This is the picture WhatsApp, iMessage and Facebook show when someone shares the link.
    - Password page message (TikTok visitors see this until launch): `Our birthday pamper hampers are almost ready. Leave your email and we'll let you know as soon as we open.`
 3. **Settings → Brand:** wordmark as logo, BB monogram as square logo, primary colour #9C5B5F, contrasting colour #FBF4EF, slogan `Gifts for every moment`, short description `Pamper hampers for her, packed by hand in Yorkshire. Free tracked UK delivery.`, social link to the TikTok profile. The Shop app and Shopify's product feeds to AI assistants read these.
-4. **Settings → Policies:** paste the five policies (sent in chat on 10 Oct 2026; copy kept in `docs/policies/policies.md`). The footer's "Terms and Policies" link comes back by itself once they exist.
+4. **Settings → Policies:** paste the refund policy and contact information (copy kept in `docs/policies/policies.md`). The footer's "Terms and Policies" link comes back by itself once they exist.
 5. **Settings → Checkout:** turn on "Show a sign-up option at checkout" for email marketing, and leave it unticked (UK rules don't allow pre-ticked boxes).
 6. **Settings → Shipping and delivery → Packing slips:** print a test slip and check it shows no prices, because boxes often go straight to the recipient.
 7. **Settings → Notifications → Customise email templates:** add the logo and the rosewood colour.
@@ -232,7 +232,7 @@ Checked on the v2 preview (theme 197109285197, live since the owner published it
 |---|---|---|
 | robots.txt allows all search and AI crawlers | Good | none |
 | Pages render without JavaScript; every image has alt text | Good | none |
-| Product: search title and description set, tagged, categorised (Gift Giving), 301 redirect from the old address | Good | Recheck the category with `shopify-category-taxonomy` |
+| Product: search title and description set, tagged, categorised (Gift Giving), 301 redirect from the old address | Good | Checked with `shopify-category-taxonomy` on 10 Oct 2026: "Gift Giving" (ae-3-1) is a broad parent; "Health & Beauty > Personal Care > Cosmetics > Bath & Body Gift Sets" (hb-3-2-2) is the closest specific match for a pamper box. The box mixes categories, so the switch waits for the owner's yes |
 | Product structured data (ProductGroup, two variants, price, stock) | Good, incomplete | Add delivery and returns (1.3) |
 | Homepage title is just the shop name; no description; no share image | Needs work | 1.1 |
 | Homepage has two main headings (H1) | Needs work | 1.3 |
@@ -242,7 +242,7 @@ Checked on the v2 preview (theme 197109285197, live since the owner published it
 | One product photo, AI-enhanced | Needs work | 1.4 |
 | Business structured data: name, logo and web address only | Needs work | 1.3 |
 | No domain; no Google or TikTok channel | Not started | 1.5, 2 |
-| All five policies empty | In progress | 1.1 |
+| Policies empty | In progress: refund and contact only | 1.1 |
 | Homepage main picture about 4.3 s on a slow-4G phone test | Borderline | 1.3; re-measure after launch |
 | llms.txt | Not possible | Shopify doesn't allow files at the site root. Shopify publishes its own agents.md and product feeds for AI assistants. |
 
