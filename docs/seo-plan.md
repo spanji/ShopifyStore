@@ -72,7 +72,7 @@ Exact text to paste. About 20 minutes in total.
 
 1. **Settings → Store details → Store name:** `Bow & Bloom`. Every page title ends with this.
 2. **Online Store → Preferences:**
-   - Homepage title: `Pamper Hampers & Birthday Gift Boxes for Her | Bow & Bloom` (58 characters)
+   - Homepage title: `Pamper Hampers & Birthday Gift Boxes for Her | Bow & Bloom` (58 characters). Still empty on 10 Oct 2026; given to the owner again.
    - Homepage meta description: `Pink pamper hampers for her, packed by hand in Yorkshire and tied with a satin bow. 17 treats for £39 with free tracked UK delivery.` (132)
    - Social sharing image: the hamper photo for now (not the banner, which shows flowers we don't sell). Swap in the new real hero photo when you have it. This is the picture WhatsApp, iMessage and Facebook show when someone shares the link.
    - Password page message (TikTok visitors see this until launch): `Our birthday pamper hampers are almost ready. Leave your email and we'll let you know as soon as we open.`
@@ -88,7 +88,7 @@ Exact text to paste. About 20 minutes in total.
 
 | Page | Search title | Search description |
 |---|---|---|
-| FAQ | FAQs: Delivery, Gift Messages and Allergens | How delivery works, when your box is sent, free gift messages, allergens and returns: answers to common questions about our pamper hampers. |
+| FAQ | FAQs: Delivery, Gift Messages and Allergens | How delivery works, when your box is sent, personalised notes, allergens and returns: answers to common questions about our pamper hampers. |
 | About us | About Us: Hampers Packed by Hand in Yorkshire | Bow & Bloom is a small gift shop in Yorkshire. Every pamper hamper is packed by hand, wrapped in pink tissue and tied with a satin bow. |
 | Contact | Contact Us | Questions about an order or a gift? Email bowandbloomgifts@outlook.com or call 07597 600465. We're a small gift shop in Bradford. |
 | Corporate & bulk orders | Corporate and Bulk Gift Hampers | Pamper hampers for teams, clients and events. Tell us how many boxes you need and when, and we'll come back to you with a quote. |
@@ -98,7 +98,7 @@ Shopify adds " – Bow & Bloom" to each title, which keeps them all under 60 cha
 
 ### 1.3 Theme fixes, on "Bow and Bloom v3 (SEO)" (unpublished; you publish)
 
-1. **One main heading on the homepage.** The logo and the hero headline are both marked as the page's main heading (H1). Keep the hero headline, "Birthday hampers she'll love".
+1. **One main heading on the homepage.** The logo and the hero headline are both marked as the page's main heading (H1). Keep the hero headline, "Birthday hampers she'll love". (v6, 10 Oct 2026: the banner stands alone and "Hampers for…" below it is the H1.)
 2. **Faster first picture on the homepage.** The banner is the first thing that loads but isn't marked as a priority, and it's sized for 1x/2x/3x screens rather than the screen's real width. Rough phone test (slow 4G, mid-range phone): the main picture appeared after about 4.3 s, on the edge of Google's "poor" rating. The preview bar adds weight that customers won't get. Re-measure with PageSpeed Insights after launch.
 3. **Business details for Google and AI assistants:**
    - Business: add the alternate name "Bow and Bloom", the TikTok profile, the email, phone and address.
@@ -136,7 +136,7 @@ Buy it in Shopify (Settings → Domains), set it as the primary domain, and Shop
 2. **Bing Webmaster Tools:** import from Search Console in one click. Bing also feeds Copilot and some ChatGPT search results.
 3. **Google & YouTube app:** connect Merchant Center for free listings, and connect Google Analytics. Needs the policies, contact details and real photos.
 4. **TikTok app:** connect the TikTok pixel so Shopify shows which videos lead to sales. Leave TikTok Shop off.
-5. **TikTok bio link:** `https://<your domain>/products/birthday-pamper-hamper-for-her?utm_source=tiktok&utm_medium=social&utm_campaign=bio`. Until the domain exists, use t4qigc-9u.myshopify.com.
+5. **TikTok bio link:** `https://<your domain>/products/birthday-pamper-hamper-for-her?utm_source=tiktok&utm_medium=social&utm_campaign=bio`. Until a custom domain exists, use bowandbloomgifts.myshopify.com (the old t4qigc-9u address redirects there, so an existing link still works).
 6. **Checks:** Google's Rich Results Test on the product page, PageSpeed Insights on mobile, and a real order on a phone from inside the TikTok app's browser.
 7. **Judge.me (free):** install, and set the review request email for about 10 days after dispatch.
 
