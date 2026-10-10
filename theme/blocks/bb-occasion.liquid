@@ -1,7 +1,8 @@
 {%- doc -%}
   Occasion choice for a product page. It looks like the variant buttons, but the
   choice is saved on the order as a note (a line item property), so every occasion
-  shares the product's one stock count.
+  shares the product's one stock count. One choice can open an optional text box
+  for the specific occasion; it is disabled, so not sent, while hidden.
 {%- enddoc -%}
 
 {%- liquid
@@ -17,6 +18,15 @@
       assign longest_choice = choice_length
     endif
   endfor
+
+  assign details_for = block_settings.details_for | strip
+  assign details_key = block_settings.details_key | default: 'Occasion details'
+  assign details_id = 'OccasionDetails-' | append: block.id
+  assign first_choice = choices | first | strip
+  assign details_open = false
+  if details_for != blank and first_choice == details_for
+    assign details_open = true
+  endif
 
   assign is_first = true
 -%}
@@ -41,6 +51,10 @@
             value="{{ choice_label | escape }}"
             form="{{ product_form_id }}"
             required
+            {% if details_for != blank and choice_label == details_for %}
+              data-bb-details
+              aria-controls="{{ details_id }}"
+            {% endif %}
             data-previous-checked="false"
             {% if is_first %}
               data-current-checked="true"
@@ -56,7 +70,60 @@
       {%- endif -%}
     {%- endfor -%}
   </fieldset>
+
+  {%- if details_for != blank -%}
+    <div class="bb-occasion__details">
+      <label for="{{ details_id }}">{{ block_settings.details_label | escape }}</label>
+      <input
+        type="text"
+        id="{{ details_id }}"
+        name="properties[{{ details_key | escape }}]"
+        class="field__input custom-property__input"
+        form="{{ product_form_id }}"
+        maxlength="{{ block_settings.details_max_length }}"
+        placeholder="{{ block_settings.details_placeholder | escape }}"
+        autocomplete="off"
+        {% unless details_open %}
+          disabled
+        {% endunless %}
+      >
+    </div>
+  {%- endif -%}
 </div>
+
+{% stylesheet %}
+  /* The optional details box only shows (and only submits) for its choice. */
+  .bb-occasion__details {
+    display: none;
+    margin-block-start: var(--padding-md);
+  }
+
+  .bb-occasion:has([data-bb-details]:checked) .bb-occasion__details {
+    display: block;
+  }
+
+  .bb-occasion__details label {
+    display: block;
+    margin-block-end: var(--padding-xs);
+  }
+
+  .bb-occasion__details input {
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bb-occasion:has([data-bb-details]:checked) .bb-occasion__details {
+      animation: bb-occasion-details-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  @keyframes bb-occasion-details-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -85,6 +152,44 @@
       "id": "property_key",
       "label": "Name on the order",
       "default": "Occasion"
+    },
+    {
+      "type": "header",
+      "content": "Optional details box"
+    },
+    {
+      "type": "text",
+      "id": "details_for",
+      "label": "Show it for this choice",
+      "info": "Must match one of the choices exactly. Leave empty to hide the box.",
+      "default": "Other celebration"
+    },
+    {
+      "type": "text",
+      "id": "details_label",
+      "label": "Box heading",
+      "default": "What's the occasion? (optional)"
+    },
+    {
+      "type": "text",
+      "id": "details_placeholder",
+      "label": "Example text",
+      "default": "e.g. graduation, new job, get well soon"
+    },
+    {
+      "type": "text",
+      "id": "details_key",
+      "label": "Box name on the order",
+      "default": "Occasion details"
+    },
+    {
+      "type": "range",
+      "id": "details_max_length",
+      "label": "Character limit",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 40
     },
     {
       "type": "header",

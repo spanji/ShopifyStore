@@ -112,7 +112,8 @@ function enhanceQuestion(details) {
 
 /**
  * Occasion choice (blocks/bb-occasion.liquid): keeps the same previous/current
- * markers the variant picker uses, so the selected pill slides between buttons.
+ * markers the variant picker uses, so the selected pill slides between buttons,
+ * and switches the optional details box on only for its choice.
  * @param {ParentNode} root
  */
 function enhanceOccasions(root) {
@@ -129,6 +130,10 @@ function enhanceOccasions(root) {
         radio.dataset.previousChecked = String(radio.dataset.currentChecked === 'true');
         radio.dataset.currentChecked = String(radio === chosen);
       }
+
+      // The optional details box is only sent with the choice that shows it.
+      const details = element.parentElement?.querySelector('.bb-occasion__details input');
+      if (details instanceof HTMLInputElement) details.disabled = !chosen.hasAttribute('data-bb-details');
     });
   }
 }
