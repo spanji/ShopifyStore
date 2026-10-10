@@ -378,6 +378,8 @@ function armReveals(scope) {
 
     for (const element of elements) {
       if (element.dataset.bbArmed) continue;
+      // The scrolling strip copies its text to loop, and copies are never revealed.
+      if (element.closest('marquee-component')) continue;
       if (element.getBoundingClientRect().top < fold) continue;
       element.dataset.bbArmed = 'true';
 

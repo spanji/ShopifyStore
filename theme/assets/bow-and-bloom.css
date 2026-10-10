@@ -1386,6 +1386,21 @@ html.bb-intro-playing.bb-intro-skipping .bb-intro {
   }
 }
 
+/* ---------- Header on tablets ----------
+ * Touch screens get the phone header (menu button and icons). Horizon runs it
+ * edge to edge, which on an iPad left the basket 5px from the side. From 750px it
+ * stays inside the page margin instead, with the menu pulled back by its own
+ * padding, so the icons line up with the page below as they do on desktop.
+ */
+
+@media screen and (min-width: 750px) {
+  #header-component[data-menu-style='drawer'] .header__row--top .header__columns {
+    grid-column: 2;
+    padding-inline: 0;
+    margin-inline-start: -1rem;
+  }
+}
+
 /* ---------- Menu drawer (phones) ----------
  * Serif links that slide in one after another, a hairline between them and an
  * arrow that wakes on touch; the current page is rosewood italic with a bow.

@@ -1,10 +1,12 @@
 {% comment %}
-  Bow and Bloom homepage hero, in two layouts:
+  Bow and Bloom homepage hero, in three layouts:
   - Framed: the photo sits in a rounded frame with bow-print wrapping paper behind
     it, beside (desktop) or under (phones) the headline and button.
   - Banner: the photo fills the right of the screen to its edge on desktop and the
     full width above the headline on phones.
-  Both carry the headline (optionally ending in changing words, snippets/bb-rotator),
+  - Full screen: the photo across the full width, the words centred below it, or
+    the photo alone (show_text off) when the next section carries the headline.
+  They carry the headline (optionally ending in changing words, snippets/bb-rotator),
   the berry buy button with the live price, trust points, a slowly turning price
   badge, floating bows and a pause button that stops every looping animation.
   On the first visit of a browser session the wrapping opens: a big bow ties itself,
@@ -73,64 +75,66 @@
   data-play-label="{{ s.play_label | escape }}"
 >
   <div class="bb-hero__inner">
-    <div class="bb-hero__text">
-      {%- if layout != 'framed' -%}
-        {{ floating_bows }}
-      {%- endif -%}
-      <span
-        class="bb-hero__bow"
-        aria-hidden="true"
-      ></span>
-
-      <h1 class="bb-hero__title">
-        <span
-          class="bb-hero__lead"
-          data-bb-enter
-          style="--d: 0.05s;"
-          >{{- s.heading_lead | escape -}}</span
-        >
-        {%- if s.words != blank -%}
-          {% render 'bb-rotator', words: s.words, seconds: s.word_seconds %}
+    {%- if s.show_text -%}
+      <div class="bb-hero__text">
+        {%- if layout != 'framed' -%}
+          {{ floating_bows }}
         {%- endif -%}
-      </h1>
+        <span
+          class="bb-hero__bow"
+          aria-hidden="true"
+        ></span>
 
-      {%- if s.subline != blank -%}
-        <p
-          class="bb-hero__sub"
-          data-bb-enter
-          style="--d: 0.35s;"
-        >
-          {{ s.subline | escape }}
-        </p>
-      {%- endif -%}
-
-      {%- if button_url != blank -%}
-        <div
-          class="bb-hero__actions"
-          data-bb-enter
-          style="--d: 0.5s;"
-        >
-          {% render 'bb-cta', url: button_url, label: s.button_label, price: price, class: 'bb-cta--full bb-cta--hero' %}
-        </div>
-      {%- endif -%}
-
-      <ul
-        class="bb-hero__trust"
-        role="list"
-      >
-        {%- for raw_point in raw_points -%}
-          {%- assign point = raw_point | strip -%}
-          {%- if point != blank -%}
-            <li
-              data-bb-enter
-              style="--d: {{ forloop.index0 | times: 0.08 | plus: 0.65 }}s;"
-            >
-              {{ point | escape }}
-            </li>
+        <h1 class="bb-hero__title">
+          <span
+            class="bb-hero__lead"
+            data-bb-enter
+            style="--d: 0.05s;"
+            >{{- s.heading_lead | escape -}}</span
+          >
+          {%- if s.words != blank -%}
+            {% render 'bb-rotator', words: s.words, seconds: s.word_seconds %}
           {%- endif -%}
-        {%- endfor -%}
-      </ul>
-    </div>
+        </h1>
+
+        {%- if s.subline != blank -%}
+          <p
+            class="bb-hero__sub"
+            data-bb-enter
+            style="--d: 0.35s;"
+          >
+            {{ s.subline | escape }}
+          </p>
+        {%- endif -%}
+
+        {%- if button_url != blank -%}
+          <div
+            class="bb-hero__actions"
+            data-bb-enter
+            style="--d: 0.5s;"
+          >
+            {% render 'bb-cta', url: button_url, label: s.button_label, price: price, class: 'bb-cta--full bb-cta--hero' %}
+          </div>
+        {%- endif -%}
+
+        <ul
+          class="bb-hero__trust"
+          role="list"
+        >
+          {%- for raw_point in raw_points -%}
+            {%- assign point = raw_point | strip -%}
+            {%- if point != blank -%}
+              <li
+                data-bb-enter
+                style="--d: {{ forloop.index0 | times: 0.08 | plus: 0.65 }}s;"
+              >
+                {{ point | escape }}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
 
     <div class="bb-hero__media">
       <div class="bb-hero__frame">
@@ -255,7 +259,8 @@
   {%- comment -%}
     The first-visit intro. It runs only when <head> flagged this visit (first of the
     session, motion allowed) and the page arrived quickly enough to play it from the start.
-    The bow then flies to the small bow above the headline.
+    The bow then flies to the small bow above the headline, or into the logo when
+    the headline is off screen or hidden.
   {%- endcomment -%}
   <script>
     (function () {
@@ -955,6 +960,13 @@
     {
       "type": "header",
       "content": "Headline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text",
+      "label": "Show the headline, button and trust points",
+      "info": "Turn off to show the photo alone. Then tick \"Main page heading\" on the section below, so the page keeps one main heading.",
+      "default": true
     },
     {
       "type": "text",

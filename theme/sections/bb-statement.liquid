@@ -2,7 +2,8 @@
   Statement: one large centred line whose last words change ("Hampers for… birthdays /
   get-well wishes / congratulations / …"), a bow above it and a short line below.
   Made to sit straight after the hero and open the product section, sharing its
-  colour, so the occasions lead into the box itself.
+  colour, so the occasions lead into the box itself. Under a photo-only hero it is
+  the page's main heading (main_heading: h1).
   When it starts below the fold, assets/bow-and-bloom.js marks it (.bb-armed) and it
   plays as it scrolls into view (.is-revealed): the bow ties itself, the words rise,
   the first changing word arrives letter by letter and its ribbon draws itself.
@@ -11,6 +12,10 @@
 
 {%- liquid
   assign s = section.settings
+  assign heading_tag = 'h2'
+  if s.main_heading
+    assign heading_tag = 'h1'
+  endif
 -%}
 
 <div class="section-background color-{{ s.color_scheme }}"></div>
@@ -32,12 +37,12 @@
       class="bb-statement__bow"
       aria-hidden="true"
     ></span>
-    <h2 class="bb-statement__title">
+    <{{ heading_tag }} class="bb-statement__title">
       <span class="bb-statement__lead">{{ s.heading_lead | escape }}</span>
       {%- if s.words != blank -%}
         {% render 'bb-rotator', words: s.words, seconds: s.word_seconds, class: 'bb-rotator--center' %}
       {%- endif -%}
-    </h2>
+    </{{ heading_tag }}>
     {%- if s.text != blank -%}
       <p class="bb-statement__text">{{ s.text | escape }}</p>
     {%- endif -%}
@@ -193,6 +198,13 @@
       "id": "heading_lead",
       "label": "Start of the line",
       "default": "Hampers for…"
+    },
+    {
+      "type": "checkbox",
+      "id": "main_heading",
+      "label": "Main page heading",
+      "info": "Tick when the hero above has no headline, so the page keeps one main heading for search engines.",
+      "default": false
     },
     {
       "type": "textarea",

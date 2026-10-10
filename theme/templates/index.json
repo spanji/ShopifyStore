@@ -6,6 +6,7 @@
       "settings": {
         "product": "birthday-pamper-hamper-for-her",
         "intro": true,
+        "show_text": false,
         "heading_lead": "Birthday hampers she'll love",
         "words": "",
         "word_seconds": 2.5,
@@ -145,8 +146,8 @@
           "block_order": [
             "caption",
             "heading",
-            "contents",
-            "buy_button"
+            "buy_button",
+            "contents"
           ]
         }
       },
@@ -168,7 +169,7 @@
         "marquee_text": {
           "type": "text",
           "settings": {
-            "text": "<p>Face roller ✿ Sheet mask ✿ Fluffy socks ✿ Sweet jar ✿ Satin sleep mask ✿ Lip balm ✿ Flower soaps ✿ Heart lollipop ✿ Hair clips ✿ </p>",
+            "text": "<p>Face roller ✿ Sheet mask ✿ Fluffy socks ✿ Sweet jar ✿ Satin sleep mask ✿ Lip balm ✿ Flower soaps ✿ Heart lollipop ✿ Hair clips ✿\u00a0</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
@@ -199,7 +200,7 @@
         "color_scheme": "scheme-6",
         "padding-block-start": 20,
         "padding-block-end": 20,
-        "gap_between_elements": 24
+        "gap_between_elements": 0
       }
     },
     "section_x8mrnx": {
@@ -553,6 +554,7 @@
       "name": "Occasions",
       "settings": {
         "heading_lead": "Hampers for…",
+        "main_heading": true,
         "words": "birthdays\nget-well wishes\ncongratulations\nsaying thank you\njust because\nevery moment",
         "word_seconds": 2.5,
         "text": "17 pamper treats for whatever you're celebrating. Pick the occasion when you order and add a free gift message.",
