@@ -86,6 +86,7 @@ function initIntro() {
     done = true;
     root.classList.remove('bb-intro', 'bb-intro-skip');
     for (const type of events) window.removeEventListener(type, skip);
+    document.dispatchEvent(new CustomEvent('bb:intro-end'));
   };
 
   const skip = () => {
@@ -98,10 +99,19 @@ function initIntro() {
   };
 
   for (const type of events) window.addEventListener(type, skip, { passive: true });
-  document.querySelector('.bb-intro')?.addEventListener('animationend', (event) => {
+
+  // The CSS hides the overlay 2.1s after it first draws, however late that is on a
+  // slow connection; tidy up when it does. The timeout only covers a page where the
+  // overlay never draws at all.
+  const overlay = document.querySelector('.bb-intro');
+  overlay?.addEventListener('animationend', (event) => {
     if (event.target === event.currentTarget) finish();
   });
-  window.setTimeout(finish, 2600);
+  let started = false;
+  overlay?.addEventListener('animationstart', () => (started = true), { once: true });
+  window.setTimeout(() => {
+    if (!started) finish();
+  }, 8000);
 }
 
 /* ---------- The changing headline word ---------- */
@@ -153,8 +163,6 @@ function initRotator(element) {
   if (words.length < 2 || reducedMotion.matches) return;
 
   const interval = Math.max(2, Number(element.dataset.seconds) || 2.5) * 1000;
-  const hero = /** @type {HTMLElement | null} */ (element.closest('.bb-hero'));
-  const firstHold = interval + (hero?.dataset.intro === 'on' ? 1700 : 700);
   let index = 0;
   let timer = 0;
   let onScreen = true;
@@ -188,7 +196,18 @@ function initRotator(element) {
   }
   document.addEventListener('visibilitychange', resume);
   document.addEventListener('bb:motion', resume);
-  timer = window.setTimeout(step, firstHold);
+
+  // The first word gets a full turn once the page (or the intro) has finished arriving.
+  const start = () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(step, interval + 700);
+  };
+  if (root.classList.contains('bb-intro')) {
+    timer = -1; // Held until the intro ends.
+    document.addEventListener('bb:intro-end', start, { once: true });
+  } else {
+    requestAnimationFrame(start);
+  }
 }
 
 /* ---------- Floating buy button on phones ---------- */
