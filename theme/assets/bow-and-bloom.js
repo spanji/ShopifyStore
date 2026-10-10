@@ -627,7 +627,10 @@ function settleNote(note, form, key) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ id: key, quantity: 0 }),
-      }).catch(() => {});
+      })
+        .then((response) => response.json())
+        .then((basket) => setBasketCount(basket.item_count))
+        .catch(() => {});
       return;
     }
     const check = note.querySelector('.bb-note__check');
@@ -711,6 +714,17 @@ async function removeLonelyAddOns(basket) {
   );
 }
 
+/**
+ * Sets the basket count in the header to the real number of items.
+ * @param {number} count
+ */
+function setBasketCount(count) {
+  if (typeof count !== 'number') return;
+  for (const icon of document.querySelectorAll('cart-icon')) {
+    /** @type {any} */ (icon).renderCartBubble?.(count, false, false);
+  }
+}
+
 /** @param {Event | null} event */
 async function onBasketChange(event) {
   const detail = /** @type {CustomEvent | null} */ (event)?.detail;
@@ -719,11 +733,7 @@ async function onBasketChange(event) {
   if (!basket) return;
   showNotesInBasket(basket);
   // The theme counts only the product it just added; the note went in too.
-  if (detail?.data?.source === 'product-form-component') {
-    for (const icon of document.querySelectorAll('cart-icon')) {
-      /** @type {any} */ (icon).renderCartBubble?.(basket.item_count, false, false);
-    }
-  }
+  if (detail?.data?.source === 'product-form-component') setBasketCount(basket.item_count);
   await removeLonelyAddOns(basket).catch(() => {});
 }
 
