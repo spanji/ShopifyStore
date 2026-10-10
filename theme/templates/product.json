@@ -299,6 +299,7 @@
                 "placeholder": "Happy birthday! Love from…",
                 "max_length": 150,
                 "property_key": "Message",
+                "empty_text": "Please write your message, or untick the note.",
                 "error_text": "Sorry, we couldn't add your note. Please try again.",
                 "padding-block-start": 0,
                 "padding-block-end": 0

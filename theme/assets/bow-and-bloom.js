@@ -481,32 +481,47 @@ function enhanceOccasions(scope) {
 
 /**
  * The tick box opens the message box (and makes it required) and hides express
- * checkout, which would skip the basket and leave the note behind.
+ * checkout, which would skip the basket and leave the note behind. Listens on the
+ * document, so notes that arrive later (a quick-add window, say) work too.
+ * @param {HTMLElement} note
+ */
+function syncNote(note) {
+  const check = note.querySelector('.bb-note__check');
+  const message = note.querySelector('.bb-note__message');
+  if (!(check instanceof HTMLInputElement) || !(message instanceof HTMLTextAreaElement)) return;
+  message.disabled = !check.checked;
+  message.setCustomValidity(check.checked && !message.value.trim() ? note.dataset.emptyText || '' : '');
+  const form = document.getElementById(note.dataset.formId || '');
+  form?.closest('product-form-component')?.toggleAttribute('data-bb-note-on', check.checked);
+  if (!check.checked) note.querySelector('.bb-note__error')?.setAttribute('hidden', '');
+}
+
+document.addEventListener('change', (event) => {
+  const check = event.target;
+  if (!(check instanceof HTMLInputElement) || !check.classList.contains('bb-note__check')) return;
+  const note = check.closest('[data-bb-note]');
+  if (!(note instanceof HTMLElement)) return;
+  syncNote(note);
+  if (check.checked) note.querySelector('textarea')?.focus({ preventScroll: true });
+});
+
+document.addEventListener('input', (event) => {
+  const message = event.target;
+  if (!(message instanceof HTMLTextAreaElement) || !message.classList.contains('bb-note__message')) return;
+  const note = message.closest('[data-bb-note]');
+  if (!(note instanceof HTMLElement)) return;
+  const count = note.querySelector('.bb-note__count');
+  if (count instanceof HTMLElement) count.textContent = `${message.value.length}/${count.dataset.max}`;
+  syncNote(note);
+});
+
+/**
+ * Notes as the page loads, in case the browser kept the tick from an earlier visit.
  * @param {ParentNode} scope
  */
 function enhanceNotes(scope) {
   for (const note of scope.querySelectorAll('[data-bb-note]')) {
-    if (!(note instanceof HTMLElement) || note.dataset.bbReady) continue;
-    const check = note.querySelector('.bb-note__check');
-    const message = note.querySelector('.bb-note__message');
-    const count = note.querySelector('.bb-note__count');
-    if (!(check instanceof HTMLInputElement) || !(message instanceof HTMLTextAreaElement)) continue;
-    note.dataset.bbReady = 'true';
-
-    const sync = () => {
-      message.disabled = !check.checked;
-      const form = document.getElementById(note.dataset.formId || '');
-      form?.closest('product-form-component')?.toggleAttribute('data-bb-note-on', check.checked);
-      if (!check.checked) note.querySelector('.bb-note__error')?.setAttribute('hidden', '');
-    };
-    check.addEventListener('change', () => {
-      sync();
-      if (check.checked) message.focus({ preventScroll: true });
-    });
-    message.addEventListener('input', () => {
-      if (count) count.textContent = `${message.value.length}/${count.dataset.max}`;
-    });
-    sync();
+    if (note instanceof HTMLElement) syncNote(note);
   }
 }
 
@@ -520,7 +535,10 @@ window.addEventListener(
   (event) => {
     const form = event.target;
     if (!(form instanceof HTMLFormElement) || !form.id || form.dataset.bbNotePassing) return;
-    const note = document.querySelector(`[data-bb-note][data-form-id="${CSS.escape(form.id)}"]`);
+    // The note for this form, in the same window (the page or a quick-add dialog).
+    const note = Array.from(document.querySelectorAll(`[data-bb-note][data-form-id="${CSS.escape(form.id)}"]`)).find(
+      (candidate) => candidate.closest('dialog') === form.closest('dialog')
+    );
     const check = note?.querySelector('.bb-note__check');
     if (!(note instanceof HTMLElement) || !(check instanceof HTMLInputElement) || !check.checked) return;
 

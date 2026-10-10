@@ -34,6 +34,7 @@
     data-variant-id="{{ note_variant.id }}"
     data-property="{{ property_key | escape }}"
     data-error="{{ block_settings.error_text | escape }}"
+    data-empty-text="{{ block_settings.empty_text | escape }}"
     {{ block.shopify_attributes }}
   >
     <label class="bb-note__toggle">
@@ -302,6 +303,12 @@
       "id": "property_key",
       "label": "Name on the order",
       "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "If the message is empty",
+      "default": "Please write your message, or untick the note."
     },
     {
       "type": "text",
