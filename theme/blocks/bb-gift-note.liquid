@@ -102,8 +102,15 @@
 {%- endif -%}
 
 {% stylesheet %}
+  /* Full width, like the occasion buttons above it, with the price on the right. */
+  .bb-note {
+    inline-size: 100%;
+  }
+
   .bb-note__toggle {
     display: flex;
+    box-sizing: border-box;
+    inline-size: 100%;
     align-items: center;
     gap: 0.8rem;
     padding: 0.9rem 1rem;
