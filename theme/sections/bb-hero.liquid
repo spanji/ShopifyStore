@@ -259,8 +259,8 @@
   {%- comment -%}
     The first-visit intro. It runs only when <head> flagged this visit (first of the
     session, motion allowed) and the page arrived quickly enough to play it from the start.
-    The bow then flies to the small bow above the headline, or into the logo when
-    the headline is off screen or hidden.
+    The bow then flies to the small bow above the headline (the statement's, when
+    this hero shows the photo alone), or into the logo when none is on screen.
   {%- endcomment -%}
   <script>
     (function () {
@@ -276,24 +276,32 @@
       hero.setAttribute('data-intro', 'on');
       root.classList.add('bb-intro-playing');
 
-      var width = Math.min(window.innerWidth * 0.64, 320);
-      var centreX = window.innerWidth / 2;
-      var centreY = window.innerHeight / 2 + width * 0.081;
-      var target = hero.querySelector('.bb-hero__bow');
-      var box = target && target.getBoundingClientRect();
-      var scale = box ? box.width / width : 0;
-      // The headline can sit below a full-screen photo; then the bow goes into the logo.
-      if (!box || box.bottom > window.innerHeight) {
-        target = document.querySelector('.header-logo__image, .header-logo');
-        box = target && target.getBoundingClientRect();
-        scale = box ? Math.min(box.height * 1.6, box.width) / width : 0;
-        root.style.setProperty('--bb-fly-opacity', '0');
-      }
-      if (box && window.scrollY === 0) {
-        root.style.setProperty('--bb-fly-x', box.left + box.width / 2 - centreX + 'px');
-        root.style.setProperty('--bb-fly-y', box.top + box.height / 2 - centreY + 'px');
+      // The bow lands on the small bow above the headline: the hero's own, or, under a
+      // photo-only hero, the statement's below it, once that has loaded. When neither
+      // is on screen it flies into the logo and fades.
+      function aim() {
+        if (window.scrollY !== 0 || !root.classList.contains('bb-intro-playing')) return;
+        var width = Math.min(window.innerWidth * 0.64, 320);
+        var target = [hero.querySelector('.bb-hero__bow'), document.querySelector('.bb-statement__bow')].find(function (bow) {
+          var bowBox = bow && bow.getBoundingClientRect();
+          return bowBox && bowBox.width > 0 && bowBox.bottom < window.innerHeight * 0.9;
+        });
+        var box = target && target.getBoundingClientRect();
+        var scale = box ? box.width / width : 0;
+        root.style.setProperty('--bb-fly-opacity', '1');
+        if (!box) {
+          target = document.querySelector('.header-logo__image, .header-logo');
+          box = target && target.getBoundingClientRect();
+          scale = box ? Math.min(box.height * 1.6, box.width) / width : 0;
+          root.style.setProperty('--bb-fly-opacity', '0');
+        }
+        if (!box) return;
+        root.style.setProperty('--bb-fly-x', box.left + box.width / 2 - window.innerWidth / 2 + 'px');
+        root.style.setProperty('--bb-fly-y', box.top + box.height / 2 - (window.innerHeight / 2 + width * 0.081) + 'px');
         root.style.setProperty('--bb-fly-scale', String(scale));
       }
+      aim();
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', aim, { once: true });
     })();
   </script>
   <div
